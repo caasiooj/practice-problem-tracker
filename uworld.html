@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5-Tier Question Error Breakdown</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 24px; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 1200px; display: flex; flex-direction: column; gap: 20px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    h1 { font-size: 1.4rem; margin-bottom: 4px; }
+    h2 { font-size: 1.05rem; margin-bottom: 10px; }
+    p.subtitle { color: var(--muted); font-size: 0.85rem; margin-bottom: 16px; }
+    
+    textarea, input { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; margin-bottom: 12px; }
+    textarea { height: 90px; font-family: monospace; resize: vertical; }
+    
+    .manual-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) auto; gap: 8px; align-items: end; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    button { padding: 8px 16px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-secondary { background: #f1f5f9; color: var(--text); }
+    
+    /* 2x2 grid on desktop, 1-column on small screens to give full width to long labels */
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; align-items: start; }
+    
+    /* Fixed table layout prevents overflow and forces word wrapping */
+    table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); word-wrap: break-word; overflow-wrap: break-word; white-space: normal; }
+    th { background: #f8fafc; color: var(--muted); font-weight: 600; }
+    
+    .col-name { width: 75%; }
+    .col-count { width: 25%; text-align: right; }
+
+    .badge-count { background: var(--danger-bg); color: var(--danger); font-weight: 700; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; }
+    
+    /* Vertical scroll only; no horizontal overflow */
+    .table-container-scroll { max-height: 280px; overflow-y: auto; overflow-x: hidden; width: 100%; }
+    .table-container-full { width: 100%; overflow-x: auto; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Input Card -->
+  <div class="card">
+    <h1>Question Error Analyzer</h1>
+    <p class="subtitle">Organize and tally misses across ID, Subjects, Systems, Categories, and Topics.</p>
+    
+    <!-- Manual Single Row Entry -->
+    <div class="manual-grid">
+      <div class="form-group">
+        <label>ID</label>
+        <input type="text" id="mId" placeholder="e.g. 1042" style="margin-bottom:0;" />
+      </div>
+      <div class="form-group">
+        <label>Subjects</label>
+        <input type="text" id="mSubject" placeholder="e.g. Pediatrics" style="margin-bottom:0;" />
+      </div>
+      <div class="form-group">
+        <label>Systems</label>
+        <input type="text" id="mSystem" placeholder="e.g. Endocrine" style="margin-bottom:0;" />
+      </div>
+      <div class="form-group">
+        <label>Categories</label>
+        <input type="text" id="mCategory" placeholder="e.g. Pathology" style="margin-bottom:0;" />
+      </div>
+      <div class="form-group">
+        <label>Topics</label>
+        <input type="text" id="mTopic" placeholder="e.g. DKA" style="margin-bottom:0;" />
+      </div>
+      <div>
+        <button class="btn-primary" onclick="addManualEntry()">Add</button>
+      </div>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--border); margin: 14px 0;" />
+
+    <!-- Bulk Paste Entry -->
+    <label style="font-weight: 600; font-size: 0.75rem; color: var(--muted); text-transform: uppercase;">Bulk Paste (Tab or Multi-Space Separated)</label>
+    <textarea id="bulkInput" placeholder="Paste data matching: ID [Tab] SUBJECTS [Tab] SYSTEMS [Tab] CATEGORIES [Tab] TOPICS"></textarea>
+    
+    <div class="btn-group">
+      <button class="btn-primary" onclick="parseBulkInput()">Import Rows</button>
+      <button class="btn-secondary" onclick="addSampleData()">Load Sample Set</button>
+      <button class="btn-danger" onclick="clearAllData()">Reset All</button>
+    </div>
+  </div>
+
+  <!-- 4 Tally Cards Grid (Vertical Scroll Only, No Horizontal Cutoff) -->
+  <div class="grid-4">
+    <!-- Subjects Tally -->
+    <div class="card">
+      <h2>Top Subjects</h2>
+      <div class="table-container-scroll">
+        <table>
+          <thead><tr><th class="col-name">Subject</th><th class="col-count">Misses</th></tr></thead>
+          <tbody id="subjectTallyBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Systems Tally -->
+    <div class="card">
+      <h2>Top Systems</h2>
+      <div class="table-container-scroll">
+        <table>
+          <thead><tr><th class="col-name">System</th><th class="col-count">Misses</th></tr></thead>
+          <tbody id="systemTallyBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Categories Tally -->
+    <div class="card">
+      <h2>Top Categories</h2>
+      <div class="table-container-scroll">
+        <table>
+          <thead><tr><th class="col-name">Category</th><th class="col-count">Misses</th></tr></thead>
+          <tbody id="categoryTallyBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Topics Tally -->
+    <div class="card">
+      <h2>Top Topics</h2>
+      <div class="table-container-scroll">
+        <table>
+          <thead><tr><th class="col-name">Topic</th><th class="col-count">Misses</th></tr></thead>
+          <tbody id="topicTallyBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Table Record -->
+  <div class="card">
+    <h2>Detailed Log</h2>
+    <div class="table-container-full">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 10%;">ID</th>
+            <th style="width: 20%;">SUBJECTS</th>
+            <th style="width: 25%;">SYSTEMS</th>
+            <th style="width: 20%;">CATEGORIES</th>
+            <th style="width: 25%;">TOPICS</th>
+            <th style="width: 10%; text-align: right;">Count</th>
+          </tr>
+        </thead>
+        <tbody id="fullLogBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = "5tier_question_tallies";
+  let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+  window.onload = renderTables;
+
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    renderTables();
+  }
+
+  function addManualEntry() {
+    const id = document.getElementById("mId").value.trim();
+    const subject = document.getElementById("mSubject").value.trim() || "Unspecified";
+    const system = document.getElementById("mSystem").value.trim() || "Unspecified";
+    const category = document.getElementById("mCategory").value.trim() || "Unspecified";
+    const topic = document.getElementById("mTopic").value.trim() || "Unspecified";
+
+    if (!id) {
+      alert("Please enter a Question ID.");
+      return;
+    }
+
+    upsertRecord({ id, subject, system, category, topic });
+    document.getElementById("mId").value = "";
+    document.getElementById("mTopic").value = "";
+    saveData();
+  }
+
+  function upsertRecord(item) {
+    const existing = records.find(r => r.id === item.id);
+    if (existing) {
+      existing.count += 1;
+      existing.subject = item.subject;
+      existing.system = item.system;
+      existing.category = item.category;
+      existing.topic = item.topic;
+    } else {
+      records.push({ ...item, count: 1 });
+    }
+  }
+
+  function parseBulkInput() {
+    const raw = document.getElementById("bulkInput").value.trim();
+    if (!raw) return;
+
+    const lines = raw.split("\n");
+    lines.forEach(line => {
+      const parts = line.split(/\t+|\s{2,}/).map(s => s.trim()).filter(Boolean);
+      if (parts.length >= 2) {
+        upsertRecord({
+          id: parts[0],
+          subject: parts[1] || "Unspecified",
+          system: parts[2] || "Unspecified",
+          category: parts[3] || "Unspecified",
+          topic: parts[4] || (parts[3] ? "Unspecified" : parts[2] || "Unspecified")
+        });
+      }
+    });
+
+    document.getElementById("bulkInput").value = "";
+    saveData();
+  }
+
+  function addSampleData() {
+    document.getElementById("bulkInput").value = 
+`3421\tPediatrics\tEndocrine, Diabetes & Metabolism\tPathology\tCongenital Adrenal Hyperplasia
+8102\tPediatrics\tGastrointestinal & Nutrition\tDiagnosis\tIntussusception
+9014\tPediatrics\tPsychiatric/Behavioral & Substance Use\tPharmacology\tADHD Management
+2210\tPediatrics\tInfectious Diseases\tMicrobiology\tKawasaki Disease
+3421\tPediatrics\tEndocrine, Diabetes & Metabolism\tPathology\tCongenital Adrenal Hyperplasia
+4419\tPediatrics\tGastrointestinal & Nutrition\tPathology\tMeckel Diverticulum`;
+  }
+
+  function clearAllData() {
+    if (confirm("Reset all tracked records?")) {
+      records = [];
+      saveData();
+    }
+  }
+
+  function populateTallyTable(targetId, counts) {
+    const tbody = document.getElementById(targetId);
+    tbody.innerHTML = Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, count]) => `
+        <tr>
+          <td><strong>${name}</strong></td>
+          <td style="text-align: right;"><span class="badge-count">${count}</span></td>
+        </tr>
+      `).join("") || '<tr><td colspan="2" style="color:var(--muted)">No data</td></tr>';
+  }
+
+  function renderTables() {
+    const subjectCounts = {};
+    const systemCounts = {};
+    const categoryCounts = {};
+    const topicCounts = {};
+
+    records.forEach(r => {
+      subjectCounts[r.subject] = (subjectCounts[r.subject] || 0) + r.count;
+      systemCounts[r.system] = (systemCounts[r.system] || 0) + r.count;
+      categoryCounts[r.category] = (categoryCounts[r.category] || 0) + r.count;
+      topicCounts[r.topic] = (topicCounts[r.topic] || 0) + r.count;
+    });
+
+    populateTallyTable("subjectTallyBody", subjectCounts);
+    populateTallyTable("systemTallyBody", systemCounts);
+    populateTallyTable("categoryTallyBody", categoryCounts);
+    populateTallyTable("topicTallyBody", topicCounts);
+
+    const logTbody = document.getElementById("fullLogBody");
+    logTbody.innerHTML = records
+      .sort((a, b) => b.count - a.count)
+      .map(r => `
+        <tr>
+          <td><code>${r.id}</code></td>
+          <td>${r.subject}</td>
+          <td>${r.system}</td>
+          <td>${r.category}</td>
+          <td>${r.topic}</td>
+          <td style="text-align: right;"><span class="badge-count">${r.count}</span></td>
+        </tr>
+      `).join("") || '<tr><td colspan="6" style="color:var(--muted)">No records logged.</td></tr>';
+  }
+</script>
+</body>
+</html>
