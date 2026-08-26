@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Practice Question Pacer</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --warning: #ea580c;
+      --rest: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 950px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    input[type="number"],
+    input[type="date"] {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+    }
+
+    /* Rest Days Options */
+    .rest-days-box {
+      margin-bottom: 20px;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .rest-days-box p {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .weekday-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .chip-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-toggle-rest {
+      background: #f1f5f9;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      border-radius: 4px;
+    }
+
+    .btn-toggle-rest:hover {
+      background: #e2e8f0;
+    }
+
+    /* Stats Dashboard */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+    }
+
+    .metric-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .metric-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .metric-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 10px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Schedule List */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--text-muted);
+      background: #f8fafc;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-completed {
+      background: #dcfce7;
+      color: var(--success);
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: var(--warning);
+    }
+
+    .status-rest {
+      background: #e2e8f0;
+      color: var(--rest);
+    }
+
+    .log-input {
+      width: 80px;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .log-input:disabled {
+      background: #f1f5f9;
+      cursor: not-allowed;
+    }
+
+    .today-row {
+      background-color: #eff6ff;
+    }
+
+    .rest-row {
+      background-color: #fcfcfc;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Setup Plan Card -->
+    <div class="card">
+      <h1>Study Plan Setup</h1>
+      <p class="subtitle">Set your total question pool, timeline, and recurring rest days.</p>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="totalQuestions">Total Questions</label>
+          <input type="number" id="totalQuestions" min="1" placeholder="e.g., 2000" />
+        </div>
+        <div class="form-group">
+          <label for="startDate">Start Date</label>
+          <input type="date" id="startDate" />
+        </div>
+        <div class="form-group">
+          <label for="endDate">End Date</label>
+          <input type="date" id="endDate" />
+        </div>
+      </div>
+
+      <div class="rest-days-box">
+        <p>Default Recurring Rest Days (excluded from daily pacing):</p>
+        <div class="weekday-chips">
+          <label class="chip-label"><input type="checkbox" id="rest-0" value="0"> Sun</label>
+          <label class="chip-label"><input type="checkbox" id="rest-1" value="1"> Mon</label>
+          <label class="chip-label"><input type="checkbox" id="rest-2" value="2"> Tue</label>
+          <label class="chip-label"><input type="checkbox" id="rest-3" value="3"> Wed</label>
+          <label class="chip-label"><input type="checkbox" id="rest-4" value="4"> Thu</label>
+          <label class="chip-label"><input type="checkbox" id="rest-5" value="5"> Fri</label>
+          <label class="chip-label"><input type="checkbox" id="rest-6" value="6"> Sat</label>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn-primary" onclick="generatePlan()">Create / Update Plan</button>
+        <button class="btn-secondary" onclick="resetPlan()">Reset</button>
+      </div>
+    </div>
+
+    <!-- Live Progress Dashboard -->
+    <div class="card" id="dashboardCard" style="display: none;">
+      <h2 style="font-size: 1.25rem; margin-bottom: 16px;">Progress Overview</h2>
+      <div class="metrics">
+        <div class="metric-card">
+          <div class="metric-title">Completed</div>
+          <div class="metric-value" id="statCompleted">0 / 0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Remaining Questions</div>
+          <div class="metric-value" id="statRemaining">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Study Days Left</div>
+          <div class="metric-value" id="statStudyDaysLeft">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Adjusted Daily Goal</div>
+          <div class="metric-value" id="statDailyGoal" style="color: var(--primary);">0</div>
+        </div>
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+
+    <!-- Daily Log Schedule -->
+    <div class="card" id="scheduleCard" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="font-size: 1.25rem;">Daily Schedule & Logging</h2>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Target</th>
+              <th>Completed</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleBody">
+            <!-- Dynamic rows will render here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "question_tracker_state_v2";
+
+    let state = {
+      totalQuestions: 0,
+      startDate: "",
+      endDate: "",
+      recurringRestDays: [], // e.g. [0] for Sunday
+      days: [] // Array of { date: string, completed: number | null, isRest: boolean }
+    };
+
+    window.onload = () => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        state = JSON.parse(saved);
+        document.getElementById("totalQuestions").value = state.totalQuestions;
+        document.getElementById("startDate").value = state.startDate;
+        document.getElementById("endDate").value = state.endDate;
+
+        // Restore weekday checkboxes
+        (state.recurringRestDays || []).forEach(dayIndex => {
+          const el = document.getElementById(`rest-${dayIndex}`);
+          if (el) el.checked = true;
+        });
+
+        renderAll();
+      } else {
+        document.getElementById("startDate").value = new Date().toISOString().split("T")[0];
+      }
+    };
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function generatePlan() {
+      const total = parseInt(document.getElementById("totalQuestions").value);
+      const startStr = document.getElementById("startDate").value;
+      const endStr = document.getElementById("endDate").value;
+
+      if (!total || total <= 0 || !startStr || !endStr) {
+        alert("Please provide a valid question target, start date, and end date.");
+        return;
+      }
+
+      const start = new Date(startStr + "T00:00:00");
+      const end = new Date(endStr + "T00:00:00");
+
+      if (end < start) {
+        alert("End date must be on or after start date.");
+        return;
+      }
+
+      // Collect selected recurring rest days
+      const restDays = [];
+      for (let i = 0; i < 7; i++) {
+        if (document.getElementById(`rest-${i}`).checked) {
+          restDays.push(i);
+        }
+      }
+
+      // Preserve existing manual edits if dates match
+      const existingData = {};
+      state.days.forEach(d => { 
+        existingData[d.date] = { completed: d.completed, isRest: d.isRest }; 
+      });
+
+      const dayList = [];
+      let cur = new Date(start);
+
+      while (cur <= end) {
+        const dateKey = cur.toISOString().split("T")[0];
+        const dayOfWeek = cur.getDay();
+        const prev = existingData[dateKey];
+
+        // Default rest state from checkboxes if not previously configured
+        const isRest = prev ? prev.isRest : restDays.includes(dayOfWeek);
+        const completed = prev ? prev.completed : null;
+
+        dayList.push({
+          date: dateKey,
+          completed: completed,
+          isRest: isRest
+        });
+
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      state = {
+        totalQuestions: total,
+        startDate: startStr,
+        endDate: endStr,
+        recurringRestDays: restDays,
+        days: dayList
+      };
+
+      saveState();
+      renderAll();
+    }
+
+    function resetPlan() {
+      if (confirm("Are you sure you want to reset your entire tracker?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        state = { totalQuestions: 0, startDate: "", endDate: "", recurringRestDays: [], days: [] };
+        document.getElementById("totalQuestions").value = "";
+        document.getElementById("startDate").value = new Date().toISOString().split("T")[0];
+        document.getElementById("endDate").value = "";
+        for (let i = 0; i < 7; i++) {
+          document.getElementById(`rest-${i}`).checked = false;
+        }
+        document.getElementById("dashboardCard").style.display = "none";
+        document.getElementById("scheduleCard").style.display = "none";
+      }
+    }
+
+    function toggleRestDay(index) {
+      state.days[index].isRest = !state.days[index].isRest;
+      if (state.days[index].isRest) {
+        state.days[index].completed = null; // Clear log if switched to rest
+      }
+      saveState();
+      renderAll();
+    }
+
+    function logProgress(index) {
+      const input = document.getElementById(`input-${index}`);
+      const val = input.value === "" ? null : Math.max(0, parseInt(input.value) || 0);
+      state.days[index].completed = val;
+      saveState();
+      renderAll();
+    }
+
+    function renderAll() {
+      if (!state.days.length) return;
+
+      document.getElementById("dashboardCard").style.display = "block";
+      document.getElementById("scheduleCard").style.display = "block";
+
+      const todayStr = new Date().toISOString().split("T")[0];
+
+      let completedSoFar = 0;
+      let unloggedStudyDaysCount = 0;
+
+      state.days.forEach(d => {
+        if (d.completed !== null) {
+          completedSoFar += d.completed;
+        } else if (!d.isRest) {
+          // Count only unlogged, non-rest days
+          unloggedStudyDaysCount++;
+        }
+      });
+
+      const remainingQuestions = Math.max(0, state.totalQuestions - completedSoFar);
+      const dynamicDailyTarget = unloggedStudyDaysCount > 0 
+        ? Math.ceil(remainingQuestions / unloggedStudyDaysCount) 
+        : 0;
+
+      // Update Dashboard Metrics
+      document.getElementById("statCompleted").innerText = `${completedSoFar} / ${state.totalQuestions}`;
+      document.getElementById("statRemaining").innerText = remainingQuestions;
+      document.getElementById("statStudyDaysLeft").innerText = unloggedStudyDaysCount;
+      document.getElementById("statDailyGoal").innerText = dynamicDailyTarget;
+
+      const progressPercent = Math.min(100, Math.round((completedSoFar / state.totalQuestions) * 100));
+      document.getElementById("progressBar").style.width = `${progressPercent}%`;
+
+      // Render Schedule Table
+      const tbody = document.getElementById("scheduleBody");
+      tbody.innerHTML = "";
+
+      state.days.forEach((d, idx) => {
+        const tr = document.createElement("tr");
+        if (d.date === todayStr) tr.classList.add("today-row");
+        if (d.isRest) tr.classList.add("rest-row");
+
+        // Format Date label with Day of Week
+        const dateObj = new Date(d.date + "T00:00:00");
+        const dayLabel = dateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+
+        let targetDisplay = "-";
+        let statusBadge = "";
+
+        if (d.isRest) {
+          statusBadge = `<span class="status-badge status-rest">Rest Day</span>`;
+        } else if (d.completed !== null) {
+          statusBadge = `<span class="status-badge status-completed">Done (${d.completed})</span>`;
+        } else {
+          targetDisplay = dynamicDailyTarget;
+          statusBadge = `<span class="status-badge status-pending">Pending</span>`;
+        }
+
+        tr.innerHTML = `
+          <td><strong>${dayLabel}</strong> ${d.date === todayStr ? "(Today)" : ""}</td>
+          <td><strong>${targetDisplay}</strong></td>
+          <td>
+            <input 
+              type="number" 
+              min="0" 
+              class="log-input" 
+              id="input-${idx}" 
+              value="${d.completed !== null ? d.completed : ""}" 
+              placeholder="${d.isRest ? 'Rest' : '0'}"
+              ${d.isRest ? "disabled" : ""}
+            />
+          </td>
+          <td>${statusBadge}</td>
+          <td>
+            <div style="display: flex; gap: 6px;">
+              ${!d.isRest ? `<button class="btn-primary" style="padding: 6px 10px; font-size: 0.75rem;" onclick="logProgress(${idx})">Save</button>` : ''}
+              <button class="btn-toggle-rest" onclick="toggleRestDay(${idx})">
+                ${d.isRest ? "Make Study Day" : "Set as Rest"}
+              </button>
+            </div>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+  </script>
+</body>
+</html>
