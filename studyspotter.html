@@ -35,14 +35,45 @@
         <span class="font-bold text-xl tracking-tight text-slate-900">StudySpotter<span class="text-indigo-600">.</span></span>
       </div>
       
-      <!-- QR Code & App Modal Trigger -->
-      <button 
-        onclick="openQrModal()" 
-        class="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-semibold transition cursor-pointer"
-      >
-        <i data-lucide="qr-code" class="w-4 h-4"></i>
-        <span>Scan / Install App</span>
-      </button>
+      <!-- Action Bar: Add Place, My Places, Favorites & QR Share -->
+      <div class="flex items-center gap-2">
+        <button 
+          onclick="openAddSpotModal()" 
+          class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-semibold transition cursor-pointer"
+          title="Add a new custom study spot"
+        >
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Add Spot</span>
+        </button>
+
+        <button 
+          onclick="switchToMySpotsTab()" 
+          class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-semibold transition cursor-pointer"
+          title="View Spots You Added"
+        >
+          <i data-lucide="user-check" class="w-4 h-4 text-amber-600"></i>
+          <span class="hidden sm:inline">My Added Spots</span>
+          <span id="header-my-count" class="px-1.5 py-0.2 bg-amber-200 text-amber-900 rounded-full text-[10px] font-bold">0</span>
+        </button>
+
+        <button 
+          onclick="switchToFavoritesTab()" 
+          class="flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-semibold transition cursor-pointer"
+          title="View Saved Favorites"
+        >
+          <i data-lucide="heart" class="w-4 h-4 fill-rose-500 text-rose-500"></i>
+          <span class="hidden sm:inline">Favorites</span>
+          <span id="header-fav-count" class="px-1.5 py-0.2 bg-rose-200 text-rose-800 rounded-full text-[10px] font-bold">0</span>
+        </button>
+
+        <button 
+          onclick="openQrModal()" 
+          class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-semibold transition cursor-pointer"
+        >
+          <i data-lucide="qr-code" class="w-4 h-4"></i>
+          <span class="hidden md:inline">App</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -50,10 +81,10 @@
   <section class="bg-gradient-to-b from-indigo-950 via-indigo-900 to-indigo-800 text-white py-12 px-4 sm:px-6 lg:px-8 shadow-md">
     <div class="max-w-3xl mx-auto text-center">
       <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
-        Find Real Study Spaces Near You
+        Find Real Study Spaces Across Southern California
       </h1>
       <p class="text-indigo-200 text-sm sm:text-base mb-6 max-w-lg mx-auto">
-        Search by <strong>ZIP code</strong>, <strong>city</strong>, or <strong>place name</strong> to explore quiet study locations with direct Google Maps routing.
+        Search by <strong>ZIP code</strong>, <strong>city</strong>, or <strong>place name</strong> across the Inland Empire, Orange County, Los Angeles, and San Diego.
       </p>
 
       <!-- Search Input -->
@@ -63,7 +94,7 @@
           <input 
             type="text" 
             id="search-input" 
-            placeholder="Search ZIP, City, or Name (e.g. 92354, Redlands, Augie's)..." 
+            placeholder="Search ZIP, City, or Name (e.g. 92354, Fireproof, Redlands)..." 
             class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white text-slate-900 placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-400/40 shadow-lg"
           />
         </div>
@@ -79,13 +110,17 @@
       <!-- Quick Chips -->
       <div class="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs text-indigo-200">
         <span>Quick searches:</span>
-        <button type="button" onclick="quickSearch('92354')" class="underline hover:text-white transition">92354 (Loma Linda)</button>
+        <button type="button" onclick="quickSearch('Inland Empire')" class="underline hover:text-white transition">Inland Empire</button>
         <span>•</span>
-        <button type="button" onclick="quickSearch('92373')" class="underline hover:text-white transition">92373 (Redlands)</button>
+        <button type="button" onclick="quickSearch('Redlands')" class="underline hover:text-white transition">Redlands</button>
         <span>•</span>
-        <button type="button" onclick="quickSearch('92501')" class="underline hover:text-white transition">92501 (Riverside)</button>
+        <button type="button" onclick="quickSearch('Riverside')" class="underline hover:text-white transition">Riverside</button>
         <span>•</span>
-        <button type="button" onclick="quickSearch('Augie\'s')" class="underline hover:text-white transition">Augie's</button>
+        <button type="button" onclick="quickSearch('Orange County')" class="underline hover:text-white transition">Orange County</button>
+        <span>•</span>
+        <button type="button" onclick="quickSearch('San Diego')" class="underline hover:text-white transition">San Diego</button>
+        <span>•</span>
+        <button type="button" onclick="quickSearch('92354')" class="underline hover:text-white transition">92354</button>
       </div>
     </div>
   </section>
@@ -96,16 +131,37 @@
     <!-- Filter Bar -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
       <div>
-        <h2 id="results-heading" class="text-lg font-bold text-slate-900">All Verified Study Spots</h2>
-        <p id="results-subtext" class="text-xs text-slate-500">Showing verified locations</p>
+        <h2 id="results-heading" class="text-lg font-bold text-slate-900">All Study Spots</h2>
+        <p id="results-subtext" class="text-xs text-slate-500">Showing verified & community locations</p>
       </div>
 
       <div class="flex flex-wrap items-center gap-3">
+        <!-- Verification Toggle -->
+        <div class="flex items-center bg-slate-200/80 p-1 rounded-xl gap-1">
+          <button id="toggle-verified" onclick="setVerificationFilter('verified')" class="px-3 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span>Verified Only</span>
+          </button>
+          <button id="toggle-all" onclick="setVerificationFilter('all')" class="px-3 py-1 text-xs font-semibold rounded-lg bg-white text-slate-900 shadow-sm transition flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="layers" class="w-3.5 h-3.5 text-indigo-600"></i>
+            <span>All Spaces</span>
+          </button>
+        </div>
+
+        <!-- Place Type, My Added & Favorites Filters -->
         <div class="flex flex-wrap gap-1.5" id="filter-buttons">
           <button data-type="all" class="filter-btn active px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm transition">All</button>
           <button data-type="coffee" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">☕ Coffee</button>
           <button data-type="library" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">📚 Libraries</button>
           <button data-type="campus" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">🎓 Campus</button>
+          <button data-type="myspots" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-amber-200 text-amber-700 hover:bg-amber-50 transition flex items-center gap-1">
+            <i data-lucide="user" class="w-3.5 h-3.5"></i>
+            <span>My Added (<span id="filter-my-count">0</span>)</span>
+          </button>
+          <button data-type="favorites" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 transition flex items-center gap-1">
+            <i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500"></i>
+            <span>Favorites (<span id="filter-fav-count">0</span>)</span>
+          </button>
         </div>
 
         <div class="flex items-center gap-1 text-xs text-slate-500 pl-2 border-l border-slate-200">
@@ -122,10 +178,31 @@
     <!-- Cards Grid -->
     <div id="spots-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-6"></div>
 
-    <!-- Pagination -->
+    <!-- Next / Prev Controls -->
     <div id="pagination-container" class="hidden flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-slate-200 mt-8">
       <div id="pagination-info" class="text-xs text-slate-500"></div>
-      <div class="flex flex-wrap items-center gap-1.5" id="pagination-buttons"></div>
+      
+      <div class="flex items-center gap-3">
+        <button 
+          id="btn-prev" 
+          class="px-4 py-2 rounded-xl border border-slate-300 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+        >
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          <span>Previous</span>
+        </button>
+
+        <span id="page-indicator" class="text-xs font-bold text-slate-700 px-3 py-1.5 bg-slate-100 rounded-lg">
+          Page 1
+        </span>
+
+        <button 
+          id="btn-next" 
+          class="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1.5 shadow-md cursor-pointer"
+        >
+          <span>Next</span>
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      </div>
     </div>
 
     <!-- Empty State -->
@@ -133,16 +210,107 @@
       <div class="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
         <i data-lucide="map-pin-off" class="w-6 h-6"></i>
       </div>
-      <h3 class="text-base font-bold text-slate-800 mb-1">No Study Spots Found</h3>
-      <p class="text-xs text-slate-500 max-w-sm mx-auto mb-4">Try searching by a neighboring ZIP code or cafe name.</p>
+      <h3 class="text-base font-bold text-slate-800 mb-1" id="empty-title">No Study Spots Found</h3>
+      <p class="text-xs text-slate-500 max-w-sm mx-auto mb-4" id="empty-subtext">Try toggling <strong>"All Spaces"</strong> or click "+ Add Spot" to add your favorite local spot.</p>
     </div>
 
   </main>
 
+  <!-- Add New Study Spot Modal -->
+  <div id="add-spot-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 p-6 relative">
+      <button onclick="closeAddSpotModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-2 mb-1">
+        <div class="p-2 bg-emerald-100 text-emerald-700 rounded-lg">
+          <i data-lucide="plus-circle" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">Add a Custom Study Spot</h3>
+          <p class="text-xs text-slate-500">Saved in your private "My Added Spots" directory. You can remove it anytime.</p>
+        </div>
+      </div>
+
+      <form id="add-spot-form" class="mt-5 space-y-3.5 text-xs text-slate-700">
+        <div>
+          <label class="block font-semibold mb-1">Place Name *</label>
+          <input type="text" id="new-name" required placeholder="e.g. Tierra Mia Coffee, Local Bean" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1">Category *</label>
+            <select id="new-type" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+              <option value="coffee">☕ Coffee Shop</option>
+              <option value="library">📚 Library</option>
+              <option value="campus">🎓 Campus / Lounge</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Region</label>
+            <input type="text" id="new-region" placeholder="e.g. Inland Empire, LA" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="block font-semibold mb-1">Street Address</label>
+            <input type="text" id="new-address" placeholder="e.g. 123 University Ave" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">ZIP Code</label>
+            <input type="text" id="new-zip" placeholder="e.g. 92507" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">City</label>
+          <input type="text" id="new-city" placeholder="e.g. Riverside, Redlands" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1">Noise Profile</label>
+            <select id="new-noise" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+              <option value="Whisper Quiet (35-42 dB)">Whisper Quiet (35-42 dB)</option>
+              <option value="Low Ambient (48-52 dB)" selected>Low Ambient (48-52 dB)</option>
+              <option value="Moderate Hum (55-62 dB)">Moderate Hum (55-62 dB)</option>
+              <option value="Lively / Upbeat (65+ dB)">Lively / Upbeat (65+ dB)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Power Outlets</label>
+            <select id="new-outlets" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+              <option value="Plentiful at most tables" selected>Plentiful at most tables</option>
+              <option value="Moderate (Perimeter walls)">Moderate (Perimeter walls)</option>
+              <option value="Scarce / Limited">Scarce / Limited</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">Wi-Fi Quality</label>
+          <input type="text" id="new-wifi" placeholder="e.g. Fast Guest Wi-Fi (50 Mbps)" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">Quick Ambiance Summary</label>
+          <textarea id="new-summary" rows="2" placeholder="Describe the vibe, seating comfort, or why you like studying here..." class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition shadow-md cursor-pointer mt-2">
+          Save Spot
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- Study Spot Detail Modal -->
   <div id="detail-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 p-6 relative">
-      <button id="modal-close" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100">
+      <button id="modal-close" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 cursor-pointer">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
       <div id="modal-content"></div>
@@ -163,12 +331,10 @@
       <h3 class="text-xl font-bold text-slate-900 mb-1">Scan to Open & Install</h3>
       <p class="text-xs text-slate-500 mb-6">Scan with your iPhone Camera to open the live app directly.</p>
 
-      <!-- Live Generated QR Code Container -->
       <div class="bg-white p-4 rounded-2xl border border-slate-200 inline-block shadow-inner mb-5">
         <div id="qrcode-container" class="flex justify-center"></div>
       </div>
 
-      <!-- Quick Install Instructions -->
       <div class="bg-slate-50 rounded-xl p-3 text-left border border-slate-200/80 mb-4 text-xs text-slate-600 space-y-1.5">
         <p class="font-bold text-slate-800 text-[11px] uppercase tracking-wide">How to install as an iPhone app:</p>
         <p>1. Open the camera app and scan the QR code.</p>
@@ -182,39 +348,27 @@
     </div>
   </div>
 
-  <!-- iOS Floating Installation Banner -->
-  <div id="ios-install-prompt" class="hidden fixed bottom-4 left-4 right-4 z-40 bg-slate-900/95 backdrop-blur-md text-white p-4 rounded-2xl shadow-2xl border border-indigo-500/30 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="p-2.5 bg-indigo-600 rounded-xl">
-        <i data-lucide="share" class="w-5 h-5 text-white"></i>
-      </div>
-      <div>
-        <p class="text-xs font-bold text-slate-100">Install as iPhone App</p>
-        <p class="text-[11px] text-slate-300">Tap <span class="font-semibold text-white">Share (↑)</span>, then tap <span class="font-semibold text-indigo-300">"Add to Home Screen"</span></p>
-      </div>
-    </div>
-    <button onclick="document.getElementById('ios-install-prompt').remove()" class="text-slate-400 hover:text-white p-1">
-      <i data-lucide="x" class="w-4 h-4"></i>
-    </button>
-  </div>
-
   <!-- Footer -->
   <footer class="bg-white border-t border-slate-200 py-5 text-center text-xs text-slate-500">
-    <p>© 2026 StudySpotter • Real-time Study Space Finder for Medical Students</p>
+    <p>© 2026 StudySpotter • Real-time Study Space Finder for Students</p>
   </footer>
 
   <!-- App Data & Scripts -->
   <script>
-    const verifiedLocations = [
-      // Loma Linda (92354)
+    const defaultLocations = [
+      // ==========================================
+      // INLAND EMPIRE (Loma Linda, Redlands, Riverside, Grand Terrace, San Bernardino, Rancho Cucamonga, Claremont)
+      // ==========================================
       {
-        id: "ll-1",
+        id: "ie-1",
         name: "Del E. Webb Memorial Library",
         type: "library",
+        verified: true,
         address: "11072 Anderson St",
         city: "Loma Linda",
         state: "CA",
         zip: "92354",
+        region: "Inland Empire",
         noiseLevel: "Whisper Quiet (35-42 dB)",
         outlets: "Abundant (At every desk & carrel)",
         wifi: "Ultra-Fast (LLU Secure & Guest)",
@@ -223,16 +377,18 @@
         rating: "4.9",
         reviewsCount: 138,
         summary: "Primary academic library on campus. Dedicated quiet floors, private study rooms with dry-erase whiteboards, and extensive desk outlets.",
-        tags: ["Quiet Floor", "Whiteboards", "Outlets Everywhere", "Campus Badge"]
+        tags: ["Quiet Floor", "Whiteboards", "Outlets Everywhere", "Loma Linda", "Inland Empire"]
       },
       {
-        id: "ll-2",
+        id: "ie-2",
         name: "Centennial Complex Quiet Study Lounge",
         type: "campus",
+        verified: true,
         address: "24760 Stewart St",
         city: "Loma Linda",
         state: "CA",
         zip: "92354",
+        region: "Inland Empire",
         noiseLevel: "Strict Silence (< 40 dB)",
         outlets: "Power hubs at all tables & carrels",
         wifi: "High-Speed Campus Network",
@@ -241,16 +397,18 @@
         rating: "4.8",
         reviewsCount: 84,
         summary: "Dedicated 24/7 quiet study environment with low foot traffic, reliable climate control, and microwave/break areas nearby.",
-        tags: ["24/7 Access", "Silent Area", "Power Strips", "Badge Required"]
+        tags: ["24/7 Access", "Silent Area", "Power Strips", "Badge Required", "Loma Linda", "Inland Empire"]
       },
       {
-        id: "ll-3",
+        id: "ie-3",
         name: "Landmark Cafe",
         type: "coffee",
+        verified: true,
         address: "24831 Redlands Blvd",
         city: "Loma Linda",
         state: "CA",
         zip: "92354",
+        region: "Inland Empire",
         noiseLevel: "Low Ambient (48-52 dB)",
         outlets: "Plentiful along back booths & counters",
         wifi: "Fast Guest Wi-Fi (40 Mbps)",
@@ -259,16 +417,18 @@
         rating: "4.5",
         reviewsCount: 62,
         summary: "Cozy local cafe with healthy meal options, pleasant ambient sound levels, and comfortable booths for long laptop study sessions.",
-        tags: ["Booth Seating", "Comfort Food", "Lo-Fi Music", "Patio"]
+        tags: ["Booth Seating", "Comfort Food", "Lo-Fi Music", "Patio", "Loma Linda", "Inland Empire"]
       },
       {
-        id: "ll-4",
+        id: "ie-4",
         name: "Loma Linda Branch Library",
         type: "library",
+        verified: true,
         address: "25581 Barton Rd",
         city: "Loma Linda",
         state: "CA",
         zip: "92354",
+        region: "Inland Empire",
         noiseLevel: "Quiet (40-45 dB)",
         outlets: "Moderate near computer carrels & study tables",
         wifi: "San Bernardino County Public Wi-Fi",
@@ -277,18 +437,418 @@
         rating: "4.6",
         reviewsCount: 47,
         summary: "Clean public library with bright natural lighting and designated quiet study desks.",
-        tags: ["Public Library", "Natural Light", "Free Parking"]
+        tags: ["Public Library", "Natural Light", "Free Parking", "Loma Linda", "Inland Empire"]
       },
-
-      // Redlands (92373 & 92374)
       {
-        id: "red-1",
+        id: "ie-5",
+        name: "Mountain View Market & Cafe Study Patio",
+        type: "coffee",
+        verified: true,
+        address: "11215 Mountain View Ave",
+        city: "Loma Linda",
+        state: "CA",
+        zip: "92354",
+        region: "Inland Empire",
+        noiseLevel: "Moderate (50-54 dB)",
+        outlets: "Select wall outlets along indoor counter",
+        wifi: "Guest Wi-Fi (30 Mbps)",
+        seating: "Outdoor shaded tables & indoor high-tops",
+        hours: "Mon-Thu 8:00AM - 7:00PM, Fri 8:00AM - 3:00PM, Sun 9:00AM - 6:00PM",
+        rating: "4.4",
+        reviewsCount: 39,
+        summary: "Casual health-conscious cafe patio with breezy outdoor seating, great for midday reviews and textbook reading.",
+        tags: ["Outdoor Patio", "Plant-based Snacks", "Fresh Air", "Loma Linda", "Inland Empire"]
+      },
+      {
+        id: "qamaria-riv",
+        name: "Qamaria Yemeni Coffee Co. (Riverside)",
+        type: "coffee",
+        verified: true,
+        address: "1201 University Ave #109A",
+        city: "Riverside",
+        state: "CA",
+        zip: "92507",
+        region: "Inland Empire",
+        noiseLevel: "Moderate / Evening Social Hum (56-62 dB)",
+        outlets: "Plentiful along side booths & counters",
+        wifi: "Fast Guest Wi-Fi (65 Mbps)",
+        seating: "Cushioned booths, wood tables, group seating",
+        hours: "Daily 8:00AM - 11:00PM (Fri-Sat until Midnight)",
+        rating: "4.8",
+        reviewsCount: 380,
+        summary: "Located right by UC Riverside. Serves spiced Yemeni roasts, Adeni chai, pastries, and offers late-night study hours with reliable Wi-Fi.",
+        tags: ["Late Night", "Yemeni Coffee", "Adeni Chai", "UCR", "Riverside", "Inland Empire", "Qamaria"]
+      },
+      {
+        id: "qamaria-rc",
+        name: "Qamaria Yemeni Coffee Co. (Rancho Cucamonga)",
+        type: "coffee",
+        verified: true,
+        address: "12729 Foothill Blvd, Unit C",
+        city: "Rancho Cucamonga",
+        state: "CA",
+        zip: "91739",
+        region: "Inland Empire",
+        noiseLevel: "Low to Moderate (52-58 dB)",
+        outlets: "Power available near booths and wall seating",
+        wifi: "High-Speed Wi-Fi",
+        seating: "Modern lounge seating, communal tables, booths",
+        hours: "Daily 8:00AM - 11:00PM",
+        rating: "4.8",
+        reviewsCount: 290,
+        summary: "Spacious Foothill Blvd location offering late-night study tables, cardamom-spiced coffee, and honeycomb pastries.",
+        tags: ["Late Night", "Foothill Blvd", "Yemeni Coffee", "Rancho Cucamonga", "Inland Empire", "Qamaria"]
+      },
+      {
+        id: "ie-fp",
+        name: "Fireproof Coffee Roasters",
+        type: "coffee",
+        verified: true,
+        address: "1055 E Newmark Ave",
+        city: "Monterey Park",
+        state: "CA",
+        zip: "91754",
+        region: "Los Angeles",
+        noiseLevel: "Low to Moderate (50-55 dB)",
+        outlets: "Along wall counters & work bar",
+        wifi: "Fast Guest Wi-Fi (60 Mbps)",
+        seating: "Minimalist oak tables, counter stools & patio",
+        hours: "Mon-Sat 7:00AM - 6:00PM, Sun 8:00AM - 5:00PM",
+        rating: "4.7",
+        reviewsCount: 165,
+        summary: "Specialty roastery with modern minimalist decor, excellent single-origin pour-overs, and a focused work environment.",
+        tags: ["Specialty Roast", "Minimalist", "Pour Overs", "Fireproof", "Los Angeles"]
+      },
+      {
+        id: "ie-bk",
+        name: "Bear and Kono Coffee",
+        type: "coffee",
+        verified: true,
+        address: "1351 E 4th St",
+        city: "Ontario",
+        state: "CA",
+        zip: "91764",
+        region: "Inland Empire",
+        noiseLevel: "Low Ambient (48-52 dB)",
+        outlets: "Plentiful near corner tables & bar",
+        wifi: "High-Speed Wi-Fi (75 Mbps)",
+        seating: "Cozy banquette seating, wooden tables & armchairs",
+        hours: "Daily 7:00AM - 5:00PM",
+        rating: "4.8",
+        reviewsCount: 140,
+        summary: "Cozy specialty cafe featuring signature drinks, welcoming study ambiance, and reliable high-speed Wi-Fi.",
+        tags: ["Cozy Vibe", "Craft Drinks", "Ontario", "Bear and Kono", "Inland Empire"]
+      },
+      {
+        id: "ie-985",
+        name: "Nine Eight Five Coffee Bar (985)",
+        type: "coffee",
+        verified: true,
+        address: "985 Kendall Dr, Unit A",
+        city: "San Bernardino",
+        state: "CA",
+        zip: "92407",
+        region: "Inland Empire",
+        noiseLevel: "Low to Moderate (50-54 dB)",
+        outlets: "Power stations along side perimeter tables",
+        wifi: "Fast Dedicated Wi-Fi (70 Mbps)",
+        seating: "Wide communal tables, banquettes & high-tops",
+        hours: "Mon-Sat 6:30AM - 6:00PM, Sun 7:30AM - 4:00PM",
+        rating: "4.8",
+        reviewsCount: 190,
+        summary: "North San Bernardino favorite near CSUSB with abundant natural light, artisanal coffees, and great study setups.",
+        tags: ["CSUSB", "Natural Light", "Nine Eight Five", "985", "San Bernardino", "Inland Empire"]
+      },
+      {
+        id: "ie-wg",
+        name: "Wild Goose Coffee Roasters",
+        type: "coffee",
+        verified: true,
+        address: "24683 Sunnymead Blvd",
+        city: "Moreno Valley",
+        state: "CA",
+        zip: "92553",
+        region: "Inland Empire",
+        noiseLevel: "Low Ambient (49-53 dB)",
+        outlets: "Plentiful along back benches & study tables",
+        wifi: "Fast Wi-Fi (65 Mbps)",
+        seating: "Spacious wooden tables, comfortable armchairs & patio",
+        hours: "Daily 7:00AM - 6:00PM",
+        rating: "4.8",
+        reviewsCount: 230,
+        summary: "Mission-driven community roaster with generous seating, top-tier espresso, and quiet study corners.",
+        tags: ["Community Hub", "Spacious", "Wild Goose", "Moreno Valley", "Inland Empire"]
+      },
+      {
+        id: "ie-sb",
+        name: "Slow Bloom Coffee Cooperative",
+        type: "coffee",
+        verified: true,
+        address: "516 W Stuart Ave",
+        city: "Redlands",
+        state: "CA",
+        zip: "92374",
+        region: "Inland Empire",
+        noiseLevel: "Low Hum (48-52 dB)",
+        outlets: "Generous near bench seating",
+        wifi: "High-Speed Wi-Fi (75 Mbps)",
+        seating: "Bench seating, wood tables, community bar",
+        hours: "Mon-Sat 7:00AM - 4:00PM, Sun 8:00AM - 3:00PM",
+        rating: "4.8",
+        reviewsCount: 88,
+        summary: "Worker-owned cooperative cafe with incredible craft roasts, relaxed natural light, and a respectful quiet work culture.",
+        tags: ["Co-op", "Craft Coffee", "Cozy Atmosphere", "Slow Bloom", "Redlands", "Inland Empire"]
+      },
+      {
+        id: "ie-rr",
+        name: "Roadrunner Coffee & Tea",
+        type: "coffee",
+        verified: true,
+        address: "2010 Iowa Ave, Unit 100",
+        city: "Riverside",
+        state: "CA",
+        zip: "92507",
+        region: "Inland Empire",
+        noiseLevel: "Low to Moderate (52-56 dB)",
+        outlets: "Outlets available at side counters",
+        wifi: "Reliable Guest Wi-Fi",
+        seating: "Indoor cafe tables and outdoor patio seating",
+        hours: "Mon-Sat 7:00AM - 5:00PM",
+        rating: "4.6",
+        reviewsCount: 110,
+        summary: "Riverside hidden gem with specialty teas, freshly pulled espresso, and comfortable laptop tables.",
+        tags: ["Specialty Tea", "Quiet Patio", "Roadrunner", "Riverside", "Inland Empire"]
+      },
+      {
+        id: "ie-klatch",
+        name: "Klatch Coffee (Redlands)",
+        type: "coffee",
+        verified: true,
+        address: "1550 Barton Rd",
+        city: "Redlands",
+        state: "CA",
+        zip: "92373",
+        region: "Inland Empire",
+        noiseLevel: "Moderate (55-60 dB)",
+        outlets: "Plentiful near booth seating & perimeter",
+        wifi: "High-Speed Wi-Fi (80 Mbps)",
+        seating: "Padded booths, wide communal tables, covered outdoor patio",
+        hours: "Daily 6:00AM - 7:00PM",
+        rating: "4.7",
+        reviewsCount: 340,
+        summary: "Award-winning roaster with signature espresso blends, generous indoor/outdoor seating, and solid study infrastructure.",
+        tags: ["Award Winning", "Booths", "Klatch Coffee", "Klatch", "Redlands", "Inland Empire"]
+      },
+      {
+        id: "ie-meek",
+        name: "Meek House Coffee & Tea",
+        type: "coffee",
+        verified: true,
+        address: "2191 Mentone Blvd",
+        city: "Mentone",
+        state: "CA",
+        zip: "92359",
+        region: "Inland Empire",
+        noiseLevel: "Low Ambient (47-51 dB)",
+        outlets: "Available along wall seating",
+        wifi: "Fast Guest Wi-Fi (50 Mbps)",
+        seating: "Cozy sofa chairs, farmhouse wood tables & patio",
+        hours: "Daily 7:00AM - 4:00PM",
+        rating: "4.8",
+        reviewsCount: 125,
+        summary: "Charming, peaceful coffeehouse located just east of Redlands with artisanal pastries and pin-drop quiet vibes.",
+        tags: ["Charming", "Farmhouse Style", "Meek House", "Mentone", "Redlands", "Inland Empire"]
+      },
+      {
+        id: "ie-condron",
+        name: "Condron Coffee",
+        type: "coffee",
+        verified: true,
+        address: "3696 Sunnyside Dr",
+        city: "Riverside",
+        state: "CA",
+        zip: "92506",
+        region: "Inland Empire",
+        noiseLevel: "Low to Moderate (50-54 dB)",
+        outlets: "Available along wall seating",
+        wifi: "Fast Guest Network",
+        seating: "Clean wood tables, comfy armchairs, bar stools",
+        hours: "Mon-Sat 7:00AM - 5:00PM, Sun 8:00AM - 4:00PM",
+        rating: "4.7",
+        reviewsCount: 92,
+        summary: "Bright, airy neighborhood cafe with minimalist decor, great iced drinks, and low ambient noise.",
+        tags: ["Minimalist", "Great Matcha", "Airy Ambiance", "Condron", "Condrone", "Riverside", "Inland Empire"]
+      },
+      {
+        id: "ie-sdog",
+        name: "Stray Dogs Coffee",
+        type: "coffee",
+        verified: true,
+        address: "25867 Business Center Dr",
+        city: "Redlands",
+        state: "CA",
+        zip: "92374",
+        region: "Inland Empire",
+        noiseLevel: "Low to Moderate (51-55 dB)",
+        outlets: "Power available at long study counters",
+        wifi: "Fast Commercial Fiber (85 Mbps)",
+        seating: "Industrial high-top desks, banquettes & lounge chairs",
+        hours: "Mon-Sat 7:00AM - 5:00PM, Sun 8:00AM - 3:00PM",
+        rating: "4.8",
+        reviewsCount: 160,
+        summary: "Modern industrial cafe in Redlands with specialty drip, high-speed fiber internet, and dedicated study desks.",
+        tags: ["Industrial Modern", "Fiber Wi-Fi", "Stray Dogs", "Redlands", "Inland Empire"]
+      },
+      {
+        id: "ie-arcade",
+        name: "Arcade Coffee Roasters",
+        type: "coffee",
+        verified: true,
+        address: "3672 Chicago Ave",
+        city: "Riverside",
+        state: "CA",
+        zip: "92507",
+        region: "Inland Empire",
+        noiseLevel: "Moderate (55-58 dB)",
+        outlets: "Plentiful along side counters & banquettes",
+        wifi: "Fast Wi-Fi (85 Mbps)",
+        seating: "Minimalist oak tables, banquette seating & patio",
+        hours: "Daily 7:00AM - 5:00PM",
+        rating: "4.8",
+        reviewsCount: 142,
+        summary: "Specialty coffee roastery with bright natural lighting, artisan baked goods, and focused work vibe.",
+        tags: ["Specialty Beans", "Natural Light", "Arcade Coffee", "Arcade", "Riverside", "Inland Empire"]
+      },
+      {
+        id: "ie-cafecito",
+        name: "Coffeecito House",
+        type: "coffee",
+        verified: true,
+        address: "3596 University Ave",
+        city: "Riverside",
+        state: "CA",
+        zip: "92501",
+        region: "Inland Empire",
+        noiseLevel: "Low to Moderate (50-55 dB)",
+        outlets: "Along wall booths and counter benches",
+        wifi: "High-Speed Wi-Fi",
+        seating: "Cozy home-style parlor seating, wooden booths & patio",
+        hours: "Daily 7:00AM - 6:00PM",
+        rating: "4.7",
+        reviewsCount: 175,
+        summary: "Historic house converted into a charming coffee spot in Downtown Riverside with Latin-inspired specialty drinks.",
+        tags: ["Historic Home", "Latin Inspired", "Coffeecito", "Riverside", "Inland Empire"]
+      },
+      {
+        id: "ie-bttg",
+        name: "Back to the Grind",
+        type: "coffee",
+        verified: true,
+        address: "3575 University Ave",
+        city: "Riverside",
+        state: "CA",
+        zip: "92501",
+        region: "Inland Empire",
+        noiseLevel: "Moderate / Bohemian Hum (58-64 dB)",
+        outlets: "Generous across basement and perimeter tables",
+        wifi: "Free Cafe Wi-Fi",
+        seating: "Two-story eclectic space, plush vintage couches, large group tables",
+        hours: "Daily 7:00AM - 9:00PM",
+        rating: "4.6",
+        reviewsCount: 820,
+        summary: "Riverside's legendary bohemian coffeehouse. Multi-level layout with spacious vintage study corners and late evening hours.",
+        tags: ["Bohemian", "Two-Story", "Late Night", "Back to the Grind", "Riverside", "Inland Empire"]
+      },
+      {
+        id: "ie-lift",
+        name: "Lift Coffee Roasters",
+        type: "coffee",
+        verified: true,
+        address: "2060 University Ave",
+        city: "Riverside",
+        state: "CA",
+        zip: "92507",
+        region: "Inland Empire",
+        noiseLevel: "Moderate (54-59 dB)",
+        outlets: "Along bar seating and main tables",
+        wifi: "Fast Guest Wi-Fi (60 Mbps)",
+        seating: "Industrial communal tables, bar stools & patio",
+        hours: "Daily 7:00AM - 6:00PM",
+        rating: "4.6",
+        reviewsCount: 310,
+        summary: "Popular student study hub near UCR featuring craft espresso, pour-overs, and a lively academic atmosphere.",
+        tags: ["Near UCR", "Craft Espresso", "Lift Coffee", "Lift", "Riverside", "Inland Empire"]
+      },
+      {
+        id: "sd-bbuzz",
+        name: "Better Buzz Coffee Roasters (Hillcrest)",
+        type: "coffee",
+        verified: true,
+        address: "801 University Ave",
+        city: "San Diego",
+        state: "CA",
+        zip: "92103",
+        region: "San Diego",
+        noiseLevel: "Moderate (58-64 dB)",
+        outlets: "Along wood bar tops and mezzanine",
+        wifi: "Fast Guest Wi-Fi (75 Mbps)",
+        seating: "Two-story mezzanine, marble tables, bright outdoor patio",
+        hours: "Daily 6:00AM - 8:00PM",
+        rating: "4.6",
+        reviewsCount: 640,
+        summary: "Spacious two-story cafe with natural skylights and mezzanine seating for daytime group study and review.",
+        tags: ["Two-Story", "Hillcrest", "Better Buzz", "San Diego"]
+      },
+      {
+        id: "qamaria-fullerton",
+        name: "Qamaria Yemeni Coffee Co. (Fullerton)",
+        type: "coffee",
+        verified: true,
+        address: "229 E Commonwealth Ave",
+        city: "Fullerton",
+        state: "CA",
+        zip: "92832",
+        region: "Orange County",
+        noiseLevel: "Moderate (55-60 dB)",
+        outlets: "Along wall seating and perimeter",
+        wifi: "Fast Dedicated Wi-Fi",
+        seating: "Indoor banquettes, cafe tables, outdoor patio",
+        hours: "Daily 8:00AM - 11:00PM (Fri-Sun until Midnight)",
+        rating: "4.7",
+        reviewsCount: 650,
+        summary: "Downtown Fullerton favorite near CSUF. Open until midnight on weekends with generous seating and warm lighting.",
+        tags: ["Late Night", "Downtown Fullerton", "CSUF", "Fullerton", "Orange County", "Qamaria"]
+      },
+      {
+        id: "qamaria-culver",
+        name: "Qamaria Yemeni Coffee Co. (Culver City)",
+        type: "coffee",
+        verified: true,
+        address: "5879 Washington Blvd",
+        city: "Culver City",
+        state: "CA",
+        zip: "90232",
+        region: "Los Angeles",
+        noiseLevel: "Low to Moderate (52-57 dB)",
+        outlets: "Wall benches and counters",
+        wifi: "Reliable Guest Wi-Fi",
+        seating: "Booths, counter stools, small group tables",
+        hours: "Daily 8:00AM - 11:00PM",
+        rating: "4.7",
+        reviewsCount: 310,
+        summary: "Westside location with late hours, artisanal single-origin Yemeni beans, and quiet daytime work conditions.",
+        tags: ["Late Night", "Culver City", "Yemeni Coffee", "Los Angeles", "Qamaria"]
+      },
+      {
+        id: "ie-augies",
         name: "Augie's Coffee House",
         type: "coffee",
+        verified: true,
         address: "300 E State St",
         city: "Redlands",
         state: "CA",
         zip: "92373",
+        region: "Inland Empire",
         noiseLevel: "Moderate / Coffeehouse Hum (58-65 dB)",
         outlets: "Moderate (Along perimeter walls)",
         wifi: "High-Speed Wi-Fi (65 Mbps)",
@@ -297,16 +857,18 @@
         rating: "4.7",
         reviewsCount: 195,
         summary: "Historic Downtown Redlands favorite with artisan espresso, perfect for group review and daytime flashcard runs.",
-        tags: ["Specialty Roast", "Historic Downtown", "Great Vibe", "Outdoor Patio"]
+        tags: ["Specialty Roast", "Downtown Redlands", "Patio", "Redlands", "Inland Empire"]
       },
       {
-        id: "red-2",
+        id: "ie-aksmiley",
         name: "A.K. Smiley Public Library",
         type: "library",
+        verified: true,
         address: "125 W Vine St",
         city: "Redlands",
         state: "CA",
         zip: "92373",
+        region: "Inland Empire",
         noiseLevel: "Whisper Quiet (36-40 dB)",
         outlets: "Designated at main reading desks",
         wifi: "Free Municipal High-Speed",
@@ -315,34 +877,18 @@
         rating: "4.9",
         reviewsCount: 220,
         summary: "Historic architectural landmark with stained glass, vaulted ceilings, and pin-drop quiet acoustics for deep immersion.",
-        tags: ["Historic Landmark", "High Ceilings", "Strict Quiet", "Beautiful Ambiance"]
+        tags: ["Historic Landmark", "Strict Quiet", "Beautiful Ambiance", "Redlands", "Inland Empire"]
       },
       {
-        id: "red-3",
-        name: "Stell Coffee & Tea Co.",
-        type: "coffee",
-        address: "1580 Barton Rd",
-        city: "Redlands",
-        state: "CA",
-        zip: "92373",
-        noiseLevel: "Low to Moderate (52-56 dB)",
-        outlets: "Plentiful near corner tables & booths",
-        wifi: "Fast Guest Wi-Fi (50 Mbps)",
-        seating: "Spacious wooden indoor tables & open-air patio",
-        hours: "Daily 6:30AM - 5:30PM",
-        rating: "4.6",
-        reviewsCount: 110,
-        summary: "Spacious roastery with ample natural lighting, relaxed acoustics, and a generous patio.",
-        tags: ["Spacious", "Natural Light", "Roastery", "Ample Parking"]
-      },
-      {
-        id: "red-4",
+        id: "ie-armacost",
         name: "Armacost Library (University of Redlands)",
         type: "campus",
+        verified: true,
         address: "1200 E Colton Ave",
         city: "Redlands",
         state: "CA",
         zip: "92374",
+        region: "Inland Empire",
         noiseLevel: "Quiet (38-42 dB on upper floors)",
         outlets: "Abundant throughout 2nd and 3rd floors",
         wifi: "University Guest Network",
@@ -351,18 +897,38 @@
         rating: "4.8",
         reviewsCount: 74,
         summary: "Multi-level university library with quiet zones and mountain views.",
-        tags: ["University Library", "Quiet Floors", "Spacious"]
+        tags: ["University Library", "Quiet Floors", "Spacious", "Redlands", "Inland Empire"]
       },
-
-      // Riverside (92501 & 92507)
       {
-        id: "riv-1",
+        id: "ie-crave",
+        name: "Crave Cafe",
+        type: "coffee",
+        verified: true,
+        address: "356 Cajon St",
+        city: "Redlands",
+        state: "CA",
+        zip: "92373",
+        region: "Inland Empire",
+        noiseLevel: "Moderate (54-60 dB)",
+        outlets: "Wall perimeter outlets",
+        wifi: "Reliable Guest Wi-Fi",
+        seating: "Indoor bistro tables and front sidewalk patio",
+        hours: "Daily 7:00AM - 3:00PM",
+        rating: "4.5",
+        reviewsCount: 95,
+        summary: "Bright cafe with light breakfast fare, artisan matcha, and a sunny morning atmosphere for study sessions.",
+        tags: ["Breakfast Fare", "Downtown", "Matcha & Tea", "Redlands", "Inland Empire"]
+      },
+      {
+        id: "ie-rivlib",
         name: "Riverside Main Public Library",
         type: "library",
+        verified: true,
         address: "3900 Mission Inn Ave",
         city: "Riverside",
         state: "CA",
         zip: "92501",
+        region: "Inland Empire",
         noiseLevel: "Whisper Quiet (38 dB)",
         outlets: "Abundant (Integrated in all study tables)",
         wifi: "High-Speed Municipal Fiber",
@@ -371,29 +937,151 @@
         rating: "4.9",
         reviewsCount: 185,
         summary: "Modern multi-story library in Downtown Riverside with rooftop reading terrace, private pods, and abundant power.",
-        tags: ["Modern Architecture", "Rooftop Terrace", "Study Pods", "Fiber Wi-Fi"]
+        tags: ["Modern Architecture", "Rooftop Terrace", "Study Pods", "Riverside", "Inland Empire"]
       },
       {
-        id: "riv-2",
-        name: "Arcade Coffee Roasters",
-        type: "coffee",
-        address: "3672 Chicago Ave",
+        id: "ie-tomas",
+        name: "Tomás Rivera Library (UC Riverside)",
+        type: "campus",
+        verified: true,
+        address: "900 University Ave",
         city: "Riverside",
         state: "CA",
-        zip: "92507",
-        noiseLevel: "Moderate (55-58 dB)",
-        outlets: "Plentiful along side counters & banquettes",
-        wifi: "Fast Wi-Fi (85 Mbps)",
-        seating: "Minimalist oak tables, banquette seating & patio",
-        hours: "Daily 7:00AM - 5:00PM",
+        zip: "92521",
+        region: "Inland Empire",
+        noiseLevel: "Silent Floors (34-38 dB)",
+        outlets: "Extensive across all quiet floors",
+        wifi: "Eduroam & UCR Guest",
+        seating: "Hundreds of carrels, group study tables, desk lamps",
+        hours: "Mon-Thu 7:30AM - Midnight, Fri 7:30AM - 6:00PM, Sun 1:00PM - Midnight",
+        rating: "4.7",
+        reviewsCount: 165,
+        summary: "Large multi-floor university research library. Upper floors are strictly enforced silent zones ideal for long exam preparation.",
+        tags: ["Silent Zones", "Late Hours", "University Research", "Riverside", "Inland Empire"]
+      },
+      {
+        id: "ie-feldheym",
+        name: "Norman F. Feldheym Central Library",
+        type: "library",
+        verified: true,
+        address: "555 W 6th St",
+        city: "San Bernardino",
+        state: "CA",
+        zip: "92410",
+        region: "Inland Empire",
+        noiseLevel: "Whisper Quiet (38-42 dB)",
+        outlets: "Plentiful in main reference room",
+        wifi: "City Public Wi-Fi",
+        seating: "Spacious individual study carrels and group conference tables",
+        hours: "Mon-Wed 10:00AM - 6:00PM, Thu 10:00AM - 8:00PM, Sat 10:00AM - 5:00PM",
+        rating: "4.5",
+        reviewsCount: 104,
+        summary: "Expansive flagship library with wide architectural courtyards, quiet reading corners, and expansive reference tables.",
+        tags: ["Large Desks", "Spacious", "Quiet Study", "San Bernardino", "Inland Empire"]
+      },
+      {
+        id: "sd-geisel",
+        name: "Geisel Library (UC San Diego)",
+        type: "campus",
+        verified: true,
+        address: "9500 Gilman Dr",
+        city: "La Jolla",
+        state: "CA",
+        zip: "92093",
+        region: "San Diego",
+        noiseLevel: "Pin-Drop Silent (Floors 6, 7 & 8: < 35 dB)",
+        outlets: "Universal charging at every desk",
+        wifi: "UCSD-Guest & Eduroam Fiber",
+        seating: "Futuristic 360-degree glass carrels with ocean/canyon views",
+        hours: "Mon-Thu 7:30AM - Midnight, Fri 7:30AM - 6:00PM, Sun 10:00AM - Midnight",
+        rating: "4.9",
+        reviewsCount: 890,
+        summary: "World-famous brutalist architectural marvel. Upper tower floors feature strict absolute silence and panoramic coastal views.",
+        tags: ["World Famous", "Ocean Views", "Strict Silence", "La Jolla", "San Diego"]
+      },
+      {
+        id: "sd-sdlib",
+        name: "San Diego Central Library (Downtown)",
+        type: "library",
+        verified: true,
+        address: "330 Park Blvd",
+        city: "San Diego",
+        state: "CA",
+        zip: "92101",
+        region: "San Diego",
+        noiseLevel: "Whisper Quiet (36-39 dB on 8th Floor)",
+        outlets: "Built into every reading station",
+        wifi: "Municipal High-Speed Fiber",
+        seating: "8th floor Neil Morgan dome reading room, rooftop view garden",
+        hours: "Mon-Tue 11:30AM - 8:00PM, Wed-Sat 9:30AM - 6:00PM, Sun 1:00PM - 5:00PM",
         rating: "4.8",
-        reviewsCount: 142,
-        summary: "Specialty coffee roastery with bright natural lighting and focused work vibe.",
-        tags: ["Specialty Beans", "Natural Light", "Design Forward"]
+        reviewsCount: 1120,
+        summary: "Spectacular 9-story library with a lattice dome reading room overlooking San Diego Bay and Coronado.",
+        tags: ["Lattice Dome", "Bay Views", "Downtown SD", "San Diego"]
+      },
+      {
+        id: "sd-lestats",
+        name: "Lestat's on Adams",
+        type: "coffee",
+        verified: true,
+        address: "3343 Adams Ave",
+        city: "San Diego",
+        state: "CA",
+        zip: "92116",
+        region: "San Diego",
+        noiseLevel: "Low to Moderate (52-56 dB)",
+        outlets: "Outlets at almost every single seat and booth",
+        wifi: "Fast Dedicated Wi-Fi",
+        seating: "Vintage velvet armchairs, sturdy wood tables, booths",
+        hours: "Daily 6:30AM - Midnight",
+        rating: "4.7",
+        reviewsCount: 980,
+        summary: "San Diego's classic late-night study institution. Relaxed bohemian vibe, tons of power outlets, and open until midnight daily.",
+        tags: ["Late Night", "Classic Study Hub", "Boho Vibe", "San Diego"]
       }
     ];
 
-    let masterResults = [...verifiedLocations];
+    // Local Storage: User Custom Added Places + User Favorites
+    function loadSavedCustomPlaces() {
+      try {
+        const stored = localStorage.getItem("studyspotter_user_spots");
+        return stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveCustomPlaces(places) {
+      try {
+        localStorage.setItem("studyspotter_user_spots", JSON.stringify(places));
+        updateCountBadges();
+      } catch (e) {
+        console.error("Failed to save to localStorage", e);
+      }
+    }
+
+    function loadUserFavorites() {
+      try {
+        const stored = localStorage.getItem("studyspotter_favorites");
+        return stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveUserFavorites(favs) {
+      try {
+        localStorage.setItem("studyspotter_favorites", JSON.stringify(favs));
+        updateCountBadges();
+      } catch (e) {
+        console.error("Failed to save favorites", e);
+      }
+    }
+
+    let userCustomPlaces = loadSavedCustomPlaces();
+    let userFavorites = loadUserFavorites();
+    let currentVerificationMode = "all"; // 'verified' or 'all'
+    let masterResults = [];
     let currentFilteredResults = [];
     let currentPage = 1;
     let itemsPerPage = 6;
@@ -402,26 +1090,177 @@
     const searchInput = document.getElementById("search-input");
     const spotsGrid = document.getElementById("spots-grid");
     const emptyState = document.getElementById("empty-state");
+    const emptyTitle = document.getElementById("empty-title");
+    const emptySubtext = document.getElementById("empty-subtext");
     const resultsHeading = document.getElementById("results-heading");
     const resultsSubtext = document.getElementById("results-subtext");
     const filterButtons = document.querySelectorAll(".filter-btn");
     const itemsPerPageSelect = document.getElementById("items-per-page");
     const paginationContainer = document.getElementById("pagination-container");
     const paginationInfo = document.getElementById("pagination-info");
-    const paginationButtons = document.getElementById("pagination-buttons");
+    const pageIndicator = document.getElementById("page-indicator");
+    const btnPrev = document.getElementById("btn-prev");
+    const btnNext = document.getElementById("btn-next");
     const modal = document.getElementById("detail-modal");
     const modalContent = document.getElementById("modal-content");
     const modalClose = document.getElementById("modal-close");
     const qrModal = document.getElementById("qr-modal");
+    const addSpotModal = document.getElementById("add-spot-modal");
+
+    function getAllLocationsList() {
+      return [...userCustomPlaces, ...defaultLocations];
+    }
 
     function refreshIcons() {
-      if (window.lucide) lucide.createIcons();
+      if (window.lucide) {
+        lucide.createIcons();
+      }
     }
+
+    function updateCountBadges() {
+      const favCount = userFavorites.length;
+      const myCount = userCustomPlaces.length;
+
+      document.getElementById("header-fav-count").textContent = favCount;
+      document.getElementById("filter-fav-count").textContent = favCount;
+      document.getElementById("header-my-count").textContent = myCount;
+      document.getElementById("filter-my-count").textContent = myCount;
+    }
+
+    window.toggleFavorite = function(id, event) {
+      if (event) event.stopPropagation();
+      const index = userFavorites.indexOf(id);
+      if (index > -1) {
+        userFavorites.splice(index, 1);
+      } else {
+        userFavorites.push(id);
+      }
+      saveUserFavorites(userFavorites);
+      applyFilterAndRender();
+    };
+
+    window.deleteCustomSpot = function(id, event) {
+      if (event) event.stopPropagation();
+      const spot = userCustomPlaces.find(s => s.id === id);
+      const spotName = spot ? spot.name : "this location";
+      
+      if (confirm("Are you sure you want to permanently delete \"" + spotName + "\" from your added spots?")) {
+        userCustomPlaces = userCustomPlaces.filter(s => s.id !== id);
+        saveCustomPlaces(userCustomPlaces);
+        
+        // Remove from favorites if it was favorited
+        userFavorites = userFavorites.filter(fId => fId !== id);
+        saveUserFavorites(userFavorites);
+
+        // Close detail modal if open
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+
+        executeSearch(searchInput.value);
+      }
+    };
+
+    window.switchToFavoritesTab = function() {
+      filterButtons.forEach(b => {
+        b.classList.remove("bg-indigo-600", "bg-rose-600", "bg-amber-600", "text-white");
+        if (b.dataset.type === "favorites") {
+          b.classList.add("bg-rose-600", "text-white");
+          b.classList.remove("bg-white", "text-rose-600");
+        } else if (b.dataset.type === "myspots") {
+          b.classList.add("bg-white", "text-amber-700", "border", "border-amber-200");
+        } else {
+          b.classList.add("bg-white", "text-slate-600", "border", "border-slate-200");
+        }
+      });
+      currentFilter = "favorites";
+      currentPage = 1;
+      executeSearch("");
+    };
+
+    window.switchToMySpotsTab = function() {
+      filterButtons.forEach(b => {
+        b.classList.remove("bg-indigo-600", "bg-rose-600", "bg-amber-600", "text-white");
+        if (b.dataset.type === "myspots") {
+          b.classList.add("bg-amber-600", "text-white");
+          b.classList.remove("bg-white", "text-amber-700");
+        } else if (b.dataset.type === "favorites") {
+          b.classList.add("bg-white", "text-rose-600", "border", "border-rose-200");
+        } else {
+          b.classList.add("bg-white", "text-slate-600", "border", "border-slate-200");
+        }
+      });
+      currentFilter = "myspots";
+      currentPage = 1;
+      executeSearch("");
+    };
+
+    function updateToggleButtons() {
+      const btnVerified = document.getElementById("toggle-verified");
+      const btnAll = document.getElementById("toggle-all");
+
+      if (currentVerificationMode === "verified") {
+        btnVerified.className = "px-3 py-1 text-xs font-semibold rounded-lg bg-white text-slate-900 shadow-sm transition flex items-center gap-1.5 cursor-pointer";
+        btnAll.className = "px-3 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer";
+      } else {
+        btnAll.className = "px-3 py-1 text-xs font-semibold rounded-lg bg-white text-slate-900 shadow-sm transition flex items-center gap-1.5 cursor-pointer";
+        btnVerified.className = "px-3 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer";
+      }
+    }
+
+    window.setVerificationFilter = function(mode) {
+      currentVerificationMode = mode;
+      updateToggleButtons();
+      executeSearch(searchInput.value);
+    };
+
+    window.openAddSpotModal = function() {
+      addSpotModal.classList.remove("hidden");
+      addSpotModal.classList.add("flex");
+      refreshIcons();
+    };
+
+    window.closeAddSpotModal = function() {
+      addSpotModal.classList.add("hidden");
+      addSpotModal.classList.remove("flex");
+      document.getElementById("add-spot-form").reset();
+    };
+
+    document.getElementById("add-spot-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const newSpot = {
+        id: "user-" + Date.now(),
+        name: document.getElementById("new-name").value.trim(),
+        type: document.getElementById("new-type").value,
+        verified: false,
+        isCustom: true,
+        address: document.getElementById("new-address").value.trim() || "Local Address",
+        city: document.getElementById("new-city").value.trim() || "Southern California",
+        state: "CA",
+        zip: document.getElementById("new-zip").value.trim() || "",
+        region: document.getElementById("new-region").value.trim() || "Inland Empire",
+        noiseLevel: document.getElementById("new-noise").value,
+        outlets: document.getElementById("new-outlets").value,
+        wifi: document.getElementById("new-wifi").value.trim() || "Guest Wi-Fi Available",
+        seating: "Standard seating available",
+        hours: "Check Google Maps for exact hours",
+        rating: "5.0",
+        reviewsCount: 1,
+        summary: document.getElementById("new-summary").value.trim() || "User-submitted community study spot.",
+        tags: ["Community Added", document.getElementById("new-city").value.trim() || "Local"]
+      };
+
+      userCustomPlaces.unshift(newSpot);
+      saveCustomPlaces(userCustomPlaces);
+      closeAddSpotModal();
+      
+      // Navigate to My Added Spots tab to view the new spot immediately
+      switchToMySpotsTab();
+      alert("✨ \"" + newSpot.name + "\" has been saved! You can find and manage it in 'My Added Spots'.");
+    });
 
     window.openQrModal = function() {
       const qrContainer = document.getElementById("qrcode-container");
       qrContainer.innerHTML = "";
-      
       const appUrl = window.location.href.split('#')[0];
       new QRCode(qrContainer, {
         text: appUrl,
@@ -431,7 +1270,6 @@
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
       });
-
       qrModal.classList.remove("hidden");
       qrModal.classList.add("flex");
       refreshIcons();
@@ -443,11 +1281,22 @@
     };
 
     function executeSearch(query) {
-      const q = query.trim().toLowerCase();
+      const q = (query || "").trim().toLowerCase();
+      const allList = getAllLocationsList();
+      
+      let dataset = (currentVerificationMode === "verified") 
+        ? allList.filter(s => s.verified) 
+        : allList;
 
       if (!q) {
-        masterResults = [...verifiedLocations];
-        resultsHeading.textContent = "All Verified Study Spots";
+        masterResults = [...dataset];
+        if (currentFilter === "favorites") {
+          resultsHeading.textContent = "Your Saved Favorites";
+        } else if (currentFilter === "myspots") {
+          resultsHeading.textContent = "Your Added Study Spots";
+        } else {
+          resultsHeading.textContent = currentVerificationMode === "verified" ? "Verified Study Spots" : "All Study Spots";
+        }
         currentPage = 1;
         applyFilterAndRender();
         return;
@@ -457,22 +1306,23 @@
       let matched = [];
 
       if (isZip) {
-        matched = verifiedLocations.filter(s => s.zip === q);
+        matched = dataset.filter(s => s.zip === q);
         if (matched.length === 0) {
           const prefix = q.slice(0, 3);
-          matched = verifiedLocations.filter(s => s.zip.startsWith(prefix));
+          matched = dataset.filter(s => s.zip.startsWith(prefix));
         }
-        resultsHeading.textContent = `Study Spots for ZIP ${q}`;
+        resultsHeading.textContent = "Study Spots for ZIP " + q;
       } else {
-        matched = verifiedLocations.filter(s => {
+        matched = dataset.filter(s => {
           const nameMatch = s.name.toLowerCase().includes(q);
           const cityMatch = s.city.toLowerCase().includes(q);
+          const regionMatch = (s.region || "").toLowerCase().includes(q);
           const addrMatch = s.address.toLowerCase().includes(q);
           const tagMatch = s.tags.some(t => t.toLowerCase().includes(q));
           const summaryMatch = s.summary.toLowerCase().includes(q);
-          return nameMatch || cityMatch || addrMatch || tagMatch || summaryMatch;
+          return nameMatch || cityMatch || regionMatch || addrMatch || tagMatch || summaryMatch;
         });
-        resultsHeading.textContent = `Results for "${query.trim()}"`;
+        resultsHeading.textContent = "Results for \"" + query.trim() + "\"";
       }
 
       masterResults = matched;
@@ -482,11 +1332,23 @@
 
     function applyFilterAndRender() {
       currentFilteredResults = masterResults.filter(spot => {
+        if (currentFilter === "favorites") {
+          return userFavorites.includes(spot.id);
+        }
+        if (currentFilter === "myspots") {
+          return spot.isCustom || spot.id.startsWith("user-");
+        }
         return currentFilter === "all" || spot.type === currentFilter;
       });
 
       const totalPages = Math.ceil(currentFilteredResults.length / itemsPerPage) || 1;
-      resultsSubtext.textContent = `Found ${currentFilteredResults.length} verified locations (Page ${currentPage} of ${totalPages})`;
+      
+      let subtextLabel = "All spaces";
+      if (currentFilter === 'favorites') subtextLabel = "Saved in your favorites";
+      else if (currentFilter === 'myspots') subtextLabel = "Custom spots created by you";
+      else if (currentVerificationMode === 'verified') subtextLabel = "Verified only";
+
+      resultsSubtext.textContent = "Found " + currentFilteredResults.length + " locations (" + subtextLabel + ") • Page " + currentPage + " of " + totalPages;
       renderPage();
     }
 
@@ -507,12 +1369,26 @@
         spotsGrid.classList.add("hidden");
         paginationContainer.classList.add("hidden");
         emptyState.classList.remove("hidden");
+
+        if (currentFilter === "favorites") {
+          emptyTitle.textContent = "No Saved Favorites Yet";
+          emptySubtext.textContent = "Click the heart icon on any coffee shop, library, or campus space to save it here for quick access.";
+        } else if (currentFilter === "myspots") {
+          emptyTitle.textContent = "No Custom Spots Added Yet";
+          emptySubtext.textContent = "Click '+ Add Spot' at the top to store and manage your personal favorite study spots.";
+        } else {
+          emptyTitle.textContent = "No Study Spots Found";
+          emptySubtext.textContent = "Try searching for a neighboring city or ZIP code, or click '+ Add Spot' to add it yourself.";
+        }
       } else {
         spotsGrid.classList.remove("hidden");
         paginationContainer.classList.remove("hidden");
         emptyState.classList.add("hidden");
 
         pageItems.forEach(spot => {
+          const isFav = userFavorites.includes(spot.id);
+          const isUserAdded = Boolean(spot.isCustom || spot.id.startsWith("user-"));
+
           const typeBadgeColor = 
             spot.type === 'library' ? 'bg-emerald-100 text-emerald-800' :
             spot.type === 'coffee' ? 'bg-amber-100 text-amber-800' : 'bg-purple-100 text-purple-800';
@@ -521,25 +1397,54 @@
             spot.type === 'library' ? '📚 Library' :
             spot.type === 'coffee' ? '☕ Coffee Shop' : '🎓 Campus / Lounge';
 
-          const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.name + ' ' + spot.address + ' ' + spot.city + ' CA')}`;
+          const verificationBadge = spot.verified 
+            ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200"><i data-lucide="check-circle" class="w-3 h-3"></i> Verified</span>`
+            : (isUserAdded 
+                ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded border border-amber-300"><i data-lucide="user" class="w-3 h-3"></i> Your Added Spot</span>`
+                : `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200"><i data-lucide="users" class="w-3 h-3"></i> Community Sourced</span>`);
+
+          const deleteButton = isUserAdded 
+            ? `<button onclick="deleteCustomSpot('${spot.id}', event)" class="p-1.5 rounded-full hover:bg-rose-100 text-slate-400 hover:text-rose-600 transition cursor-pointer" title="Delete this custom spot">
+                 <i data-lucide="trash-2" class="w-4 h-4"></i>
+               </button>` 
+            : '';
+
+          const mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(spot.name + " " + spot.address + " " + spot.city + " CA");
 
           const card = document.createElement("div");
-          card.className = "bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-xl hover:border-indigo-200 transition duration-200 flex flex-col justify-between";
+          card.className = "bg-white border " + (spot.verified ? 'border-slate-200' : 'border-slate-200 bg-slate-50/50') + " rounded-2xl p-5 hover:shadow-xl hover:border-indigo-200 transition duration-200 flex flex-col justify-between relative group";
 
           card.innerHTML = `
             <div>
               <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${typeBadgeColor}">
-                  ${typeLabel}
-                </span>
-                <div class="flex items-center gap-1 text-amber-500 font-bold text-xs bg-amber-50 px-2 py-1 rounded-md">
-                  <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
-                  <span>${spot.rating}</span>
-                  <span class="text-slate-400 font-normal">(${spot.reviewsCount})</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${typeBadgeColor}">
+                    ${typeLabel}
+                  </span>
+                  ${verificationBadge}
+                </div>
+                
+                <div class="flex items-center gap-1">
+                  ${deleteButton}
+                  <!-- Favorite Heart Button -->
+                  <button 
+                    onclick="toggleFavorite('${spot.id}', event)" 
+                    class="p-1.5 rounded-full hover:bg-rose-50 text-slate-300 hover:text-rose-500 transition cursor-pointer"
+                    title="${isFav ? 'Remove from favorites' : 'Add to favorites'}"
+                  >
+                    <i data-lucide="heart" class="w-5 h-5 ${isFav ? 'fill-rose-500 text-rose-500' : 'text-slate-400 hover:text-rose-500'}"></i>
+                  </button>
                 </div>
               </div>
 
-              <h3 class="font-bold text-base text-slate-900 mb-1 leading-snug">${spot.name}</h3>
+              <div class="flex items-center justify-between mb-1">
+                <h3 class="font-bold text-base text-slate-900 leading-snug">${spot.name}</h3>
+                <div class="flex items-center gap-1 text-amber-500 font-bold text-xs shrink-0 pl-2">
+                  <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i>
+                  <span>${spot.rating}</span>
+                </div>
+              </div>
+
               <p class="text-xs text-slate-500 mb-4 flex items-center gap-1">
                 <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
                 ${spot.address}, ${spot.city} (${spot.zip})
@@ -582,67 +1487,99 @@
           spotsGrid.appendChild(card);
         });
 
-        renderPaginationControls(totalPages, startIndex, endIndex, totalItems);
+        // Update Pagination Controls
+        paginationInfo.textContent = "Showing " + (startIndex + 1) + "–" + endIndex + " of " + totalItems + " spots";
+        pageIndicator.textContent = "Page " + currentPage + " of " + totalPages;
+        
+        btnPrev.disabled = currentPage === 1;
+        btnNext.disabled = currentPage === totalPages;
       }
 
       refreshIcons();
     }
 
-    function renderPaginationControls(totalPages, start, end, total) {
-      paginationInfo.textContent = `Showing ${start + 1}–${end} of ${total} verified locations`;
-      paginationButtons.innerHTML = "";
-
-      if (totalPages <= 1) return;
-
-      const prevBtn = document.createElement("button");
-      prevBtn.className = `p-2 rounded-lg border text-xs font-semibold flex items-center gap-1 ${currentPage === 1 ? 'border-slate-200 text-slate-300 cursor-not-allowed' : 'border-slate-300 text-slate-700 hover:bg-slate-100 cursor-pointer'}`;
-      prevBtn.innerHTML = `<i data-lucide="chevron-left" class="w-4 h-4"></i>`;
-      prevBtn.disabled = currentPage === 1;
-      prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(); window.scrollTo({ top: 380, behavior: 'smooth' }); } };
-      paginationButtons.appendChild(prevBtn);
-
-      for (let i = 1; i <= totalPages; i++) {
-        const pageBtn = document.createElement("button");
-        const isActive = i === currentPage;
-        pageBtn.className = `w-8 h-8 rounded-lg text-xs font-bold transition cursor-pointer ${isActive ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'}`;
-        pageBtn.textContent = i;
-        pageBtn.onclick = () => { currentPage = i; renderPage(); window.scrollTo({ top: 380, behavior: 'smooth' }); };
-        paginationButtons.appendChild(pageBtn);
+    btnPrev.onclick = () => {
+      if (currentPage > 1) {
+        currentPage--;
+        applyFilterAndRender();
+        window.scrollTo({ top: 350, behavior: 'smooth' });
       }
+    };
 
-      const nextBtn = document.createElement("button");
-      nextBtn.className = `p-2 rounded-lg border text-xs font-semibold flex items-center gap-1 ${currentPage === totalPages ? 'border-slate-200 text-slate-300 cursor-not-allowed' : 'border-slate-300 text-slate-700 hover:bg-slate-100 cursor-pointer'}`;
-      nextBtn.innerHTML = `<i data-lucide="chevron-right" class="w-4 h-4"></i>`;
-      nextBtn.disabled = currentPage === totalPages;
-      nextBtn.onclick = () => { if (currentPage < totalPages) { currentPage++; renderPage(); window.scrollTo({ top: 380, behavior: 'smooth' }); } };
-      paginationButtons.appendChild(nextBtn);
-    }
+    btnNext.onclick = () => {
+      const totalPages = Math.ceil(currentFilteredResults.length / itemsPerPage) || 1;
+      if (currentPage < totalPages) {
+        currentPage++;
+        applyFilterAndRender();
+        window.scrollTo({ top: 350, behavior: 'smooth' });
+      }
+    };
 
     window.showDetails = function(id) {
-      const spot = verifiedLocations.find(s => s.id === id);
+      const allList = getAllLocationsList();
+      const spot = allList.find(s => s.id === id);
       if (!spot) return;
+
+      const isFav = userFavorites.includes(spot.id);
+      const isUserAdded = Boolean(spot.isCustom || spot.id.startsWith("user-"));
 
       const typeBadgeColor = 
         spot.type === 'library' ? 'bg-emerald-50 text-emerald-700' :
         spot.type === 'coffee' ? 'bg-amber-50 text-amber-700' : 'bg-purple-50 text-purple-700';
 
-      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.name + ' ' + spot.address + ' ' + spot.city + ' CA')}`;
+      const verificationNotice = spot.verified
+        ? `<div class="flex items-center gap-2 p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs mb-4">
+             <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+             <span><strong>Verified Study Space:</strong> Noise levels, outlet count, and Wi-Fi verified on-site.</span>
+           </div>`
+        : (isUserAdded 
+            ? `<div class="flex items-center gap-2 p-2.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-xs mb-4">
+                 <i data-lucide="user" class="w-4 h-4 text-amber-600 shrink-0"></i>
+                 <span><strong>Your Added Spot:</strong> Created by you and stored in your private directory.</span>
+               </div>`
+            : `<div class="flex items-center gap-2 p-2.5 bg-slate-100 border border-slate-200 text-slate-800 rounded-xl text-xs mb-4">
+                 <i data-lucide="users" class="w-4 h-4 text-slate-600 shrink-0"></i>
+                 <span><strong>Community Sourced Listing:</strong> Acoustic measurements and power outlet counts have not yet been independently verified.</span>
+               </div>`);
+
+      const deleteModalBtn = isUserAdded 
+        ? `<button onclick="deleteCustomSpot('${spot.id}')" class="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 transition cursor-pointer">
+             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+             <span>Delete Spot</span>
+           </button>`
+        : '';
+
+      const mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(spot.name + " " + spot.address + " " + spot.city + " CA");
 
       modalContent.innerHTML = `
-        <div class="flex items-center gap-2 mb-2">
-          <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded ${typeBadgeColor}">
-            ${spot.type.toUpperCase()}
-          </span>
-          <span class="text-xs text-amber-500 font-bold flex items-center gap-1">
-            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> ${spot.rating} (${spot.reviewsCount} reviews)
-          </span>
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded ${typeBadgeColor}">
+              ${spot.type.toUpperCase()}
+            </span>
+            <span class="text-xs text-amber-500 font-bold flex items-center gap-1">
+              <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> ${spot.rating} (${spot.reviewsCount} reviews)
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            ${deleteModalBtn}
+            <button onclick="toggleFavorite('${spot.id}'); showDetails('${spot.id}');" class="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg border ${isFav ? 'bg-rose-50 border-rose-200 text-rose-600' : 'bg-slate-50 border-slate-200 text-slate-600'} cursor-pointer">
+              <i data-lucide="heart" class="w-3.5 h-3.5 ${isFav ? 'fill-rose-500 text-rose-500' : ''}"></i>
+              <span>${isFav ? 'Saved' : 'Save'}</span>
+            </button>
+          </div>
         </div>
+
         <h2 class="text-xl font-bold text-slate-900 mb-1">${spot.name}</h2>
         <p class="text-xs text-slate-500 mb-5 flex items-center gap-1">
           <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${spot.address}, ${spot.city}, ${spot.state} ${spot.zip}
         </p>
 
+        ${verificationNotice}
+
         <div class="bg-slate-50 p-4 rounded-xl space-y-2.5 mb-5 border border-slate-200/60 text-xs">
+          <div class="flex justify-between items-center"><strong class="text-slate-500">Region:</strong> <span class="font-semibold text-slate-800">${spot.region || "Southern California"}</span></div>
           <div class="flex justify-between items-center"><strong class="text-slate-500">Noise Profile:</strong> <span class="font-semibold text-slate-800">${spot.noiseLevel}</span></div>
           <div class="flex justify-between items-center"><strong class="text-slate-500">Power Outlets:</strong> <span class="font-semibold text-slate-800">${spot.outlets}</span></div>
           <div class="flex justify-between items-center"><strong class="text-slate-500">Wi-Fi Connection:</strong> <span class="font-semibold text-slate-800">${spot.wifi}</span></div>
@@ -686,11 +1623,27 @@
     filterButtons.forEach(btn => {
       btn.addEventListener("click", () => {
         filterButtons.forEach(b => {
-          b.classList.remove("bg-indigo-600", "text-white");
-          b.classList.add("bg-white", "text-slate-600", "border", "border-slate-200");
+          b.classList.remove("bg-indigo-600", "bg-rose-600", "bg-amber-600", "text-white");
+          if (b.dataset.type === "favorites") {
+            b.classList.add("bg-white", "text-rose-600", "border", "border-rose-200");
+          } else if (b.dataset.type === "myspots") {
+            b.classList.add("bg-white", "text-amber-700", "border", "border-amber-200");
+          } else {
+            b.classList.add("bg-white", "text-slate-600", "border", "border-slate-200");
+          }
         });
-        btn.classList.add("bg-indigo-600", "text-white");
-        btn.classList.remove("bg-white", "text-slate-600", "border", "border-slate-200");
+
+        if (btn.dataset.type === "favorites") {
+          btn.classList.add("bg-rose-600", "text-white");
+          btn.classList.remove("bg-white", "text-rose-600");
+        } else if (btn.dataset.type === "myspots") {
+          btn.classList.add("bg-amber-600", "text-white");
+          btn.classList.remove("bg-white", "text-amber-700");
+        } else {
+          btn.classList.add("bg-indigo-600", "text-white");
+          btn.classList.remove("bg-white", "text-slate-600");
+        }
+
         currentFilter = btn.dataset.type;
         currentPage = 1;
         applyFilterAndRender();
@@ -707,13 +1660,7 @@
     });
 
     window.addEventListener("DOMContentLoaded", () => {
-      const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-      const isStandalone = ('standalone' in window.navigator) && (window.navigator.standalone);
-      if (isIos && !isStandalone) {
-        document.getElementById('ios-install-prompt').classList.remove('hidden');
-      }
-      
-      searchInput.value = "";
+      updateCountBadges();
       executeSearch("");
     });
   </script>
