@@ -29,12 +29,12 @@
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-indigo-600 text-white rounded-2xl shadow-sm flex items-center justify-center">
-          <i data-lucide="feather" class="w-5 h-5"></i>
+        <div class="w-10 h-10 bg-amber-500 text-white rounded-2xl shadow-sm flex items-center justify-center">
+          <i data-lucide="bird" class="w-5 h-5"></i>
         </div>
         <div class="flex flex-col">
           <span class="font-bold text-lg tracking-tight text-slate-900 leading-tight">SwoopNstudy</span>
-          <span class="text-[11px] font-medium text-slate-400 tracking-wide">For the early birds and the night owls</span>
+          <span class="text-[11px] font-medium text-amber-600 tracking-wide">For the early birds and the night owls</span>
         </div>
       </div>
       
@@ -51,7 +51,7 @@
 
         <button 
           onclick="openQrModal()" 
-          class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-semibold transition cursor-pointer"
+          class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-semibold transition cursor-pointer"
         >
           <i data-lucide="qr-code" class="w-4 h-4"></i>
           <span class="hidden sm:inline">App</span>
@@ -60,22 +60,22 @@
     </div>
   </header>
 
-  <!-- Hero Section with Split Sunny (Left) & Night (Right) Gradient -->
-  <section class="bg-gradient-to-r from-amber-500 via-indigo-900 to-indigo-950 text-white py-12 px-4 sm:px-6 lg:px-8 shadow-md relative overflow-hidden">
-    <!-- Subtle decorative glow for the sunny side -->
-    <div class="absolute -left-20 -top-20 w-72 h-72 bg-yellow-400/20 rounded-full blur-3xl pointer-events-none"></div>
-    <!-- Subtle moonlight glow for the night side -->
-    <div class="absolute -right-20 -bottom-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+  <!-- Hero Section with Richer, High-Contrast Sunrise-to-Twilight Gradient -->
+  <section class="bg-[linear-gradient(135deg,#f59e0b_0%,#4338ca_50%,#1e1b4b_100%)] text-white py-14 px-4 sm:px-6 lg:px-8 shadow-md relative overflow-hidden">
+    <!-- Brighter decorative sun glow (Left) -->
+    <div class="absolute -left-10 -top-10 w-80 h-80 bg-amber-400/40 rounded-full blur-2xl pointer-events-none"></div>
+    <!-- Deeper moonlight glow (Right) -->
+    <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-indigo-500/30 rounded-full blur-2xl pointer-events-none"></div>
 
     <div class="max-w-3xl mx-auto text-center relative z-10">
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-amber-200 text-xs font-semibold mb-3 border border-white/10">
-        <i data-lucide="bird" class="w-3.5 h-3.5"></i>
+      <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-amber-100 text-xs font-semibold mb-3 border border-white/25 shadow-sm">
+        <i data-lucide="feather" class="w-3.5 h-3.5 text-amber-200"></i>
         <span>Find your next perching spot</span>
       </div>
-      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3 drop-shadow-sm">
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 drop-shadow-md">
         Ready to roost?
       </h1>
-      <p class="text-indigo-100 text-sm sm:text-base mb-6 max-w-lg mx-auto drop-shadow-sm">
+      <p class="text-amber-50 text-sm sm:text-base mb-6 max-w-lg mx-auto drop-shadow">
         Find a study spot that will help you soar
       </p>
 
@@ -87,12 +87,12 @@
             type="text" 
             id="search-input" 
             placeholder="Search ZIP, City, or Name (e.g. 92354, Fireproof, Redlands)..." 
-            class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white text-slate-900 placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-amber-400/40 shadow-lg"
+            class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white text-slate-900 placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-amber-300/50 shadow-xl"
           />
         </div>
         <button 
           type="submit" 
-          class="w-full sm:w-auto px-7 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl transition shadow-lg flex items-center justify-center gap-2 cursor-pointer shrink-0 border border-white/10"
+          class="w-full sm:w-auto px-7 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl transition shadow-xl flex items-center justify-center gap-2 cursor-pointer shrink-0 border border-white/20"
         >
           <span>Swoop In</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -100,7 +100,7 @@
       </form>
 
       <!-- Quick Chips -->
-      <div class="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs text-indigo-100">
+      <div class="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs text-amber-100 font-medium">
         <span>Quick nests:</span>
         <button type="button" onclick="quickSearch('Inland Empire')" class="underline hover:text-white transition">Inland Empire</button>
         <span>•</span>
@@ -150,7 +150,7 @@
             <span>Verified Only</span>
           </button>
           <button id="toggle-all" onclick="setVerificationFilter('all')" class="px-3 py-1 text-xs font-semibold rounded-lg bg-white text-slate-900 shadow-sm transition flex items-center gap-1.5 cursor-pointer">
-            <i data-lucide="layers" class="w-3.5 h-3.5 text-indigo-600"></i>
+            <i data-lucide="layers" class="w-3.5 h-3.5 text-amber-600"></i>
             <span>All Spaces</span>
           </button>
         </div>
@@ -159,24 +159,24 @@
       <!-- Right Side: Time Filter & Type Filter Chips & Items Per Page -->
       <div class="flex flex-col lg:items-end gap-3">
         <!-- Live Clock & Time Filter Box -->
-        <div class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 px-3 py-2 rounded-xl text-xs">
-          <div class="flex items-center gap-1.5 text-indigo-900 font-semibold pr-2 border-r border-indigo-200">
-            <i data-lucide="clock" class="w-3.5 h-3.5 text-indigo-600"></i>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl text-xs">
+          <div class="flex items-center gap-1.5 text-amber-900 font-semibold pr-2 border-r border-amber-200">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-600"></i>
             <span>Now: <strong id="current-live-time" class="font-bold">--:--</strong></span>
           </div>
           <div class="flex items-center gap-1.5 pl-1">
-            <label for="time-filter-input" class="text-indigo-900 font-medium whitespace-nowrap">Filter Time:</label>
+            <label for="time-filter-input" class="text-amber-900 font-medium whitespace-nowrap">Filter Time:</label>
             <input 
               type="time" 
               id="time-filter-input" 
-              class="bg-white border border-indigo-200 rounded-lg px-2 py-1 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+              class="bg-white border border-amber-200 rounded-lg px-2 py-1 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer"
               title="Filter spots open at this time"
               onchange="applyFilterAndRender()"
             />
             <button 
               type="button" 
               onclick="clearTimeFilter()" 
-              class="text-indigo-600 hover:text-indigo-800 font-bold px-1 text-xs" 
+              class="text-amber-700 hover:text-amber-900 font-bold px-1 text-xs" 
               title="Clear Time Filter"
             >
               ✕
@@ -187,7 +187,7 @@
         <!-- Type Filter Chips & Items Per Page Dropdown -->
         <div class="flex flex-wrap items-center gap-2">
           <div class="flex flex-wrap items-center gap-1.5" id="filter-buttons">
-            <button data-type="all" class="filter-btn active px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition flex items-center gap-1.5 cursor-pointer">
+            <button data-type="all" class="filter-btn active px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-600 text-white shadow-sm transition flex items-center gap-1.5 cursor-pointer">
               <i data-lucide="compass" class="w-3.5 h-3.5"></i>
               <span>All Types</span>
             </button>
@@ -240,7 +240,7 @@
 
         <button 
           id="btn-next" 
-          class="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1.5 shadow-md cursor-pointer"
+          class="px-5 py-2 rounded-xl bg-amber-600 text-white text-xs font-semibold hover:bg-amber-500 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1.5 shadow-md cursor-pointer"
         >
           <span>Next</span>
           <i data-lucide="chevron-right" class="w-4 h-4"></i>
@@ -250,7 +250,7 @@
 
     <!-- Empty State -->
     <div id="empty-state" class="hidden text-center py-16">
-      <div class="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+      <div class="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-500">
         <i data-lucide="feather" class="w-6 h-6"></i>
       </div>
       <h3 class="text-base font-bold text-slate-800 mb-1" id="empty-title">No Empty Nests Found</h3>
@@ -267,7 +267,7 @@
       </button>
 
       <div class="flex items-center gap-2 mb-1">
-        <div class="p-2 bg-emerald-100 text-emerald-700 rounded-lg">
+        <div class="p-2 bg-amber-100 text-amber-700 rounded-lg">
           <i data-lucide="feather" class="w-5 h-5"></i>
         </div>
         <div>
@@ -279,13 +279,13 @@
       <form id="add-spot-form" class="mt-5 space-y-3.5 text-xs text-slate-700">
         <div>
           <label class="block font-semibold mb-1">Place Name *</label>
-          <input type="text" id="new-name" required placeholder="e.g. Qamaria Coffee, Local Roastery" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <input type="text" id="new-name" required placeholder="e.g. Qamaria Coffee, Local Roastery" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-semibold mb-1">Category *</label>
-            <select id="new-type" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+            <select id="new-type" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
               <option value="coffee">☕ Coffee Shop</option>
               <option value="library">📚 Library</option>
               <option value="campus">🎓 Campus / Lounge</option>
@@ -293,30 +293,30 @@
           </div>
           <div>
             <label class="block font-semibold mb-1">Region</label>
-            <input type="text" id="new-region" placeholder="e.g. Inland Empire, LA" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="text" id="new-region" placeholder="e.g. Inland Empire, LA" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
           </div>
         </div>
 
         <div class="grid grid-cols-3 gap-3">
           <div class="col-span-2">
             <label class="block font-semibold mb-1">Street Address</label>
-            <input type="text" id="new-address" placeholder="e.g. 123 University Ave" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="text" id="new-address" placeholder="e.g. 123 University Ave" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
           </div>
           <div>
             <label class="block font-semibold mb-1">ZIP Code</label>
-            <input type="text" id="new-zip" placeholder="e.g. 92507" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="text" id="new-zip" placeholder="e.g. 92507" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
           </div>
         </div>
 
         <div>
           <label class="block font-semibold mb-1">City</label>
-          <input type="text" id="new-city" placeholder="e.g. Riverside, Redlands" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <input type="text" id="new-city" placeholder="e.g. Riverside, Redlands" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-semibold mb-1">Noise Profile</label>
-            <select id="new-noise" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+            <select id="new-noise" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
               <option value="Whisper Quiet (35-42 dB)">Whisper Quiet (35-42 dB)</option>
               <option value="Low Ambient (48-52 dB)" selected>Low Ambient (48-52 dB)</option>
               <option value="Moderate Hum (55-62 dB)">Moderate Hum (55-62 dB)</option>
@@ -325,7 +325,7 @@
           </div>
           <div>
             <label class="block font-semibold mb-1">Power Outlets</label>
-            <select id="new-outlets" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+            <select id="new-outlets" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
               <option value="Plentiful at most tables" selected>Plentiful at most tables</option>
               <option value="Moderate (Perimeter walls)">Moderate (Perimeter walls)</option>
               <option value="Scarce / Limited">Scarce / Limited</option>
@@ -335,15 +335,15 @@
 
         <div>
           <label class="block font-semibold mb-1">Wi-Fi Quality</label>
-          <input type="text" id="new-wifi" placeholder="e.g. Fast Guest Wi-Fi (50 Mbps)" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <input type="text" id="new-wifi" placeholder="e.g. Fast Guest Wi-Fi (50 Mbps)" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
         </div>
 
         <div>
           <label class="block font-semibold mb-1">Quick Ambiance Summary</label>
-          <textarea id="new-summary" rows="2" placeholder="Describe the vibe, seating comfort, or why you like studying here..." class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+          <textarea id="new-summary" rows="2" placeholder="Describe the vibe, seating comfort, or why you like studying here..." class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
         </div>
 
-        <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition shadow-md cursor-pointer mt-2">
+        <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-xl transition shadow-md cursor-pointer mt-2">
           Save Nest
         </button>
       </form>
@@ -367,7 +367,7 @@
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+      <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
         <i data-lucide="smartphone" class="w-6 h-6"></i>
       </div>
 
@@ -382,7 +382,7 @@
         <p class="font-bold text-slate-800 text-[11px] uppercase tracking-wide">How to install as an iPhone app:</p>
         <p>1. Open the camera app and scan the QR code.</p>
         <p>2. Tap the Safari banner to open the page.</p>
-        <p>3. Tap the <strong class="text-slate-900">Share icon (↑)</strong> and select <strong class="text-indigo-600">"Add to Home Screen" (+)</strong>.</p>
+        <p>3. Tap the <strong class="text-slate-900">Share icon (↑)</strong> and select <strong class="text-amber-600">"Add to Home Screen" (+)</strong>.</p>
       </div>
 
       <button onclick="closeQrModal()" class="w-full py-2.5 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition cursor-pointer">
@@ -398,7 +398,7 @@
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
+      <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
         <i data-lucide="feather" class="w-6 h-6"></i>
       </div>
 
@@ -407,7 +407,7 @@
 
       <div class="bg-slate-50 rounded-2xl p-4 text-left border border-slate-200/80 mb-6 text-xs text-slate-700 space-y-2.5">
         <div class="flex items-start gap-2.5">
-          <div class="p-1.5 bg-indigo-600 text-white rounded-lg shrink-0 mt-0.5">
+          <div class="p-1.5 bg-amber-500 text-white rounded-lg shrink-0 mt-0.5">
             <i data-lucide="share" class="w-3.5 h-3.5"></i>
           </div>
           <div>
@@ -417,7 +417,7 @@
         </div>
 
         <div class="flex items-start gap-2.5">
-          <div class="p-1.5 bg-indigo-600 text-white rounded-lg shrink-0 mt-0.5">
+          <div class="p-1.5 bg-amber-500 text-white rounded-lg shrink-0 mt-0.5">
             <i data-lucide="plus-square" class="w-3.5 h-3.5"></i>
           </div>
           <div>
@@ -1307,7 +1307,7 @@
       
       // Select My Added tab to view immediately
       filterButtons.forEach(b => {
-        b.classList.remove("bg-indigo-600", "bg-rose-600", "bg-amber-600", "text-white");
+        b.classList.remove("bg-amber-600", "bg-rose-600", "text-white");
         if (b.dataset.type === "myspots") {
           b.classList.add("bg-amber-600", "text-white");
           b.classList.remove("bg-white", "text-amber-700");
@@ -1564,7 +1564,7 @@
           const mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(spot.name + " " + spot.address + " " + spot.city + " CA");
 
           const card = document.createElement("div");
-          card.className = "bg-white border " + (spot.verified ? 'border-slate-200' : 'border-slate-200 bg-slate-50/50') + " rounded-2xl p-5 hover:shadow-xl hover:border-indigo-200 transition duration-200 flex flex-col justify-between relative group";
+          card.className = "bg-white border " + (spot.verified ? 'border-slate-200' : 'border-slate-200 bg-slate-50/50') + " rounded-2xl p-5 hover:shadow-xl hover:border-amber-200 transition duration-200 flex flex-col justify-between relative group";
 
           card.innerHTML = `
             <div>
@@ -1625,11 +1625,11 @@
                 ${spot.tags.map(t => `<span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded font-medium">${t}</span>`).join('')}
               </div>
               <div class="flex gap-2">
-                <button onclick="showDetails('${spot.id}')" class="flex-1 py-2.5 bg-slate-900 hover:bg-indigo-600 text-white font-medium text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <button onclick="showDetails('${spot.id}')" class="flex-1 py-2.5 bg-slate-900 hover:bg-amber-600 text-white font-medium text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
                   <span>Details</span>
                   <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
                 </button>
-                <a href="${mapsUrl}" target="_blank" class="px-3 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-1" title="Open in Google Maps">
+                <a href="${mapsUrl}" target="_blank" class="px-3 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold text-xs rounded-xl transition flex items-center justify-center gap-1" title="Open in Google Maps">
                   <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
                   <span>Maps</span>
                 </a>
@@ -1741,12 +1741,12 @@
 
         <div class="mb-5">
           <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">Study Ambiance Overview</h4>
-          <p class="text-xs text-slate-600 leading-relaxed bg-indigo-50/50 p-3 rounded-lg border border-indigo-100">
+          <p class="text-xs text-slate-600 leading-relaxed bg-amber-50/50 p-3 rounded-lg border border-amber-100">
             ${spot.summary}
           </p>
         </div>
 
-        <a href="${mapsUrl}" target="_blank" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+        <a href="${mapsUrl}" target="_blank" class="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition">
           <i data-lucide="navigation" class="w-4 h-4"></i> Open in Google Maps
         </a>
       `;
@@ -1775,7 +1775,7 @@
     filterButtons.forEach(btn => {
       btn.addEventListener("click", () => {
         filterButtons.forEach(b => {
-          b.classList.remove("bg-indigo-600", "bg-rose-600", "bg-amber-600", "text-white");
+          b.classList.remove("bg-amber-600", "bg-rose-600", "text-white");
           if (b.dataset.type === "favorites") {
             b.classList.add("bg-white", "text-rose-600", "border", "border-rose-200");
           } else if (b.dataset.type === "myspots") {
@@ -1792,7 +1792,7 @@
           btn.classList.add("bg-amber-600", "text-white");
           btn.classList.remove("bg-white", "text-amber-700");
         } else {
-          btn.classList.add("bg-indigo-600", "text-white");
+          btn.classList.add("bg-amber-600", "text-white");
           btn.classList.remove("bg-white", "text-slate-700");
         }
 
