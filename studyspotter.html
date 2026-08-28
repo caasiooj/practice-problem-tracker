@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>StudySpotter | Verified Real Study Spaces</title>
+  <title>SwoopNstudy | Verified Real Study Spaces</title>
 
   <!-- iOS / Apple Web App Metadata -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="StudySpotter">
+  <meta name="apple-mobile-web-app-title" content="SwoopNstudy">
   <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/caasiooj/practice-problem-tracker/main/icon.png">
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/caasiooj/practice-problem-tracker/main/icon.png">
 
@@ -28,11 +28,14 @@
   <!-- Header -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <div class="p-2 bg-indigo-600 text-white rounded-lg shadow-sm">
-          <i data-lucide="map-pin" class="w-5 h-5"></i>
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-indigo-600 text-white rounded-2xl shadow-sm flex items-center justify-center">
+          <i data-lucide="feather" class="w-5 h-5"></i>
         </div>
-        <span class="font-bold text-xl tracking-tight text-slate-900">StudySpotter<span class="text-indigo-600">.</span></span>
+        <div class="flex flex-col">
+          <span class="font-bold text-lg tracking-tight text-slate-900 leading-tight">SwoopNstudy</span>
+          <span class="text-[11px] font-medium text-slate-400 tracking-wide">For the early birds and the night owls</span>
+        </div>
       </div>
       
       <!-- Action Bar: Add Spot & QR App Modal Trigger -->
@@ -57,14 +60,23 @@
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="bg-gradient-to-b from-indigo-950 via-indigo-900 to-indigo-800 text-white py-12 px-4 sm:px-6 lg:px-8 shadow-md">
-    <div class="max-w-3xl mx-auto text-center">
-      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
-        Find Real Study Spaces Across Southern California
+  <!-- Hero Section with Split Sunny (Left) & Night (Right) Gradient -->
+  <section class="bg-gradient-to-r from-amber-500 via-indigo-900 to-indigo-950 text-white py-12 px-4 sm:px-6 lg:px-8 shadow-md relative overflow-hidden">
+    <!-- Subtle decorative glow for the sunny side -->
+    <div class="absolute -left-20 -top-20 w-72 h-72 bg-yellow-400/20 rounded-full blur-3xl pointer-events-none"></div>
+    <!-- Subtle moonlight glow for the night side -->
+    <div class="absolute -right-20 -bottom-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-3xl mx-auto text-center relative z-10">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-amber-200 text-xs font-semibold mb-3 border border-white/10">
+        <i data-lucide="bird" class="w-3.5 h-3.5"></i>
+        <span>Find your next perching spot</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3 drop-shadow-sm">
+        Ready to roost?
       </h1>
-      <p class="text-indigo-200 text-sm sm:text-base mb-6 max-w-lg mx-auto">
-        Search by <strong>ZIP code</strong>, <strong>city</strong>, or <strong>place name</strong> across the Inland Empire, Orange County, Los Angeles, and San Diego.
+      <p class="text-indigo-100 text-sm sm:text-base mb-6 max-w-lg mx-auto drop-shadow-sm">
+        Find a study spot that will help you soar
       </p>
 
       <!-- Search Input -->
@@ -75,21 +87,21 @@
             type="text" 
             id="search-input" 
             placeholder="Search ZIP, City, or Name (e.g. 92354, Fireproof, Redlands)..." 
-            class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white text-slate-900 placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-400/40 shadow-lg"
+            class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white text-slate-900 placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-amber-400/40 shadow-lg"
           />
         </div>
         <button 
           type="submit" 
-          class="w-full sm:w-auto px-7 py-3.5 bg-indigo-500 hover:bg-indigo-400 text-white font-semibold rounded-xl transition shadow-lg flex items-center justify-center gap-2 cursor-pointer shrink-0"
+          class="w-full sm:w-auto px-7 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl transition shadow-lg flex items-center justify-center gap-2 cursor-pointer shrink-0 border border-white/10"
         >
-          <span>Search</span>
+          <span>Swoop In</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
       </form>
 
       <!-- Quick Chips -->
-      <div class="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs text-indigo-200">
-        <span>Quick searches:</span>
+      <div class="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs text-indigo-100">
+        <span>Quick nests:</span>
         <button type="button" onclick="quickSearch('Inland Empire')" class="underline hover:text-white transition">Inland Empire</button>
         <span>•</span>
         <button type="button" onclick="quickSearch('Redlands')" class="underline hover:text-white transition">Redlands</button>
@@ -144,34 +156,63 @@
         </div>
       </div>
 
-      <!-- Right Side: Type Filter Chips & Items Per Page Dropdown -->
-      <div class="flex flex-wrap items-center gap-2">
-        <div class="flex flex-wrap items-center gap-1.5" id="filter-buttons">
-          <button data-type="all" class="filter-btn active px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition flex items-center gap-1.5 cursor-pointer">
-            <i data-lucide="compass" class="w-3.5 h-3.5"></i>
-            <span>All Types</span>
-          </button>
-          <button data-type="coffee" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm">
-            <span>☕</span>
-            <span>Coffee</span>
-          </button>
-          <button data-type="library" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm">
-            <span>📚</span>
-            <span>Libraries</span>
-          </button>
-          <button data-type="campus" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm">
-            <span>🎓</span>
-            <span>Campus</span>
-          </button>
+      <!-- Right Side: Time Filter & Type Filter Chips & Items Per Page -->
+      <div class="flex flex-col lg:items-end gap-3">
+        <!-- Live Clock & Time Filter Box -->
+        <div class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 px-3 py-2 rounded-xl text-xs">
+          <div class="flex items-center gap-1.5 text-indigo-900 font-semibold pr-2 border-r border-indigo-200">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-indigo-600"></i>
+            <span>Now: <strong id="current-live-time" class="font-bold">--:--</strong></span>
+          </div>
+          <div class="flex items-center gap-1.5 pl-1">
+            <label for="time-filter-input" class="text-indigo-900 font-medium whitespace-nowrap">Filter Time:</label>
+            <input 
+              type="time" 
+              id="time-filter-input" 
+              class="bg-white border border-indigo-200 rounded-lg px-2 py-1 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+              title="Filter spots open at this time"
+              onchange="applyFilterAndRender()"
+            />
+            <button 
+              type="button" 
+              onclick="clearTimeFilter()" 
+              class="text-indigo-600 hover:text-indigo-800 font-bold px-1 text-xs" 
+              title="Clear Time Filter"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
-        <!-- Per Page Dropdown -->
-        <div class="flex items-center bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 shadow-sm">
-          <select id="items-per-page" class="bg-transparent text-xs font-medium text-slate-700 focus:outline-none cursor-pointer">
-            <option value="6" selected>6 / page</option>
-            <option value="12">12 / page</option>
-            <option value="24">24 / page</option>
-          </select>
+        <!-- Type Filter Chips & Items Per Page Dropdown -->
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="flex flex-wrap items-center gap-1.5" id="filter-buttons">
+            <button data-type="all" class="filter-btn active px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition flex items-center gap-1.5 cursor-pointer">
+              <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+              <span>All Types</span>
+            </button>
+            <button data-type="coffee" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+              <span>☕</span>
+              <span>Coffee</span>
+            </button>
+            <button data-type="library" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+              <span>📚</span>
+              <span>Libraries</span>
+            </button>
+            <button data-type="campus" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+              <span>🎓</span>
+              <span>Campus</span>
+            </button>
+          </div>
+
+          <!-- Per Page Dropdown -->
+          <div class="flex items-center bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 shadow-sm">
+            <select id="items-per-page" class="bg-transparent text-xs font-medium text-slate-700 focus:outline-none cursor-pointer">
+              <option value="6" selected>6 / page</option>
+              <option value="12">12 / page</option>
+              <option value="24">24 / page</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -210,10 +251,10 @@
     <!-- Empty State -->
     <div id="empty-state" class="hidden text-center py-16">
       <div class="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
-        <i data-lucide="map-pin-off" class="w-6 h-6"></i>
+        <i data-lucide="feather" class="w-6 h-6"></i>
       </div>
-      <h3 class="text-base font-bold text-slate-800 mb-1" id="empty-title">No Study Spots Found</h3>
-      <p class="text-xs text-slate-500 max-w-sm mx-auto mb-4" id="empty-subtext">Try toggling <strong>"All Spaces"</strong> or click "+ Add Spot" to add your favorite local spot.</p>
+      <h3 class="text-base font-bold text-slate-800 mb-1" id="empty-title">No Empty Nests Found</h3>
+      <p class="text-xs text-slate-500 max-w-sm mx-auto mb-4" id="empty-subtext">No spots appear to be open at this selected time. Try clearing the time filter or picking a different hour.</p>
     </div>
 
   </main>
@@ -227,18 +268,18 @@
 
       <div class="flex items-center gap-2 mb-1">
         <div class="p-2 bg-emerald-100 text-emerald-700 rounded-lg">
-          <i data-lucide="plus-circle" class="w-5 h-5"></i>
+          <i data-lucide="feather" class="w-5 h-5"></i>
         </div>
         <div>
-          <h3 class="text-lg font-bold text-slate-900">Add a Custom Study Spot</h3>
-          <p class="text-xs text-slate-500">Saved in your private "My Added" directory. You can delete it anytime.</p>
+          <h3 class="text-lg font-bold text-slate-900">Add a New Nest</h3>
+          <p class="text-xs text-slate-500">Add your favorite perching spot to your private "My Added" directory.</p>
         </div>
       </div>
 
       <form id="add-spot-form" class="mt-5 space-y-3.5 text-xs text-slate-700">
         <div>
           <label class="block font-semibold mb-1">Place Name *</label>
-          <input type="text" id="new-name" required placeholder="e.g. Tierra Mia Coffee, Local Bean" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <input type="text" id="new-name" required placeholder="e.g. Qamaria Coffee, Local Roastery" class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -303,7 +344,7 @@
         </div>
 
         <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition shadow-md cursor-pointer mt-2">
-          Save Spot
+          Save Nest
         </button>
       </form>
     </div>
@@ -358,11 +399,11 @@
       </button>
 
       <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
-        <i data-lucide="smartphone" class="w-6 h-6"></i>
+        <i data-lucide="feather" class="w-6 h-6"></i>
       </div>
 
-      <h3 class="text-lg font-bold text-slate-900 mb-1">Add StudySpotter to iPhone</h3>
-      <p class="text-xs text-slate-500 mb-5">Install this app on your home screen for quick access and full-screen study sessions.</p>
+      <h3 class="text-lg font-bold text-slate-900 mb-1">Take SwoopNstudy On the Fly</h3>
+      <p class="text-xs text-slate-500 mb-5">Install this app to your home screen so you can scout study perches anywhere, anytime.</p>
 
       <div class="bg-slate-50 rounded-2xl p-4 text-left border border-slate-200/80 mb-6 text-xs text-slate-700 space-y-2.5">
         <div class="flex items-start gap-2.5">
@@ -387,14 +428,14 @@
       </div>
 
       <button onclick="dismissInstallPopup()" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl transition shadow-md cursor-pointer">
-        Got it, Thanks!
+        Let's Fly!
       </button>
     </div>
   </div>
 
   <!-- Footer -->
   <footer class="bg-white border-t border-slate-200 py-5 text-center text-xs text-slate-500">
-    <p>© 2026 StudySpotter • Real-time Study Space Finder for Students</p>
+    <p>© 2026 SwoopNstudy • For the early birds and the night owls</p>
   </footer>
 
   <!-- App Data & Scripts -->
@@ -1305,15 +1346,75 @@
       qrModal.classList.remove("flex");
     };
 
-    window.dismissInstallPrompt = function() {
-      const prompt = document.getElementById("ios-install-prompt");
-      if (prompt) {
-        prompt.classList.add("hidden");
+    window.dismissInstallPopup = function() {
+      const popup = document.getElementById("ios-install-prompt") || document.getElementById("ios-install-popup");
+      if (popup) {
+        popup.classList.add("hidden");
+        popup.classList.remove("flex");
         try {
-          sessionStorage.setItem("studyspotter_prompt_dismissed", "true");
+          sessionStorage.setItem("studyspotter_popup_dismissed", "true");
         } catch (e) {}
       }
     };
+
+    // Initialize Live Clock & Time Filter Checker
+    function initLiveClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const timeStr = hours + ":" + minutes;
+
+      const clockEl = document.getElementById("current-live-time");
+      if (clockEl) clockEl.textContent = timeStr;
+
+      // Set default input time to current time if empty
+      const timeInput = document.getElementById("time-filter-input");
+      if (timeInput && !timeInput.value) {
+        timeInput.value = timeStr;
+      }
+    }
+
+    window.clearTimeFilter = function() {
+      const timeInput = document.getElementById("time-filter-input");
+      if (timeInput) timeInput.value = "";
+      applyFilterAndRender();
+    };
+
+    // Simple time parser to check if a spot is open based on hours string
+    function isSpotOpenAtTime(hoursStr, filterTimeStr) {
+      if (!hoursStr || !filterTimeStr || hoursStr.toLowerCase().includes("24/7")) return true;
+      if (hoursStr.toLowerCase().includes("check google")) return true; // default pass if unparsed
+
+      // Convert filter time (HH:MM) to minutes from midnight
+      const [fHour, fMin] = filterTimeStr.split(':').map(Number);
+      const filterTotalMins = fHour * 60 + fMin;
+
+      // Basic regex extraction for time ranges like "7:30AM - 11:00PM" or "Daily 7:00AM - 6:00PM"
+      const timeRegex = /(\d{1,2}):?(\d{2})?\s*(AM|PM)/gi;
+      let matches = [...hoursStr.matchAll(timeRegex)];
+      
+      if (matches.length >= 2) {
+        let openMin = parseToMinutes(matches[0][1], matches[0][2], matches[0][3]);
+        let closeMin = parseToMinutes(matches[1][1], matches[1][2], matches[1][3]);
+        
+        if (closeMin < openMin) {
+          // Crosses midnight (e.g. open until midnight or 2 AM)
+          return filterTotalMins >= openMin || filterTotalMins <= closeMin;
+        }
+        return filterTotalMins >= openMin && filterTotalMins <= closeMin;
+      }
+
+      return true; // default fallback
+    }
+
+    function parseToMinutes(h, m, ampm) {
+      let hour = parseInt(h, 10);
+      let min = m ? parseInt(m, 10) : 0;
+      ampm = ampm.toUpperCase();
+      if (ampm === "PM" && hour < 12) hour += 12;
+      if (ampm === "AM" && hour === 12) hour = 0;
+      return hour * 60 + min;
+    }
 
     function executeSearch(query) {
       const q = (query || "").trim().toLowerCase();
@@ -1366,14 +1467,26 @@
     }
 
     function applyFilterAndRender() {
+      const timeFilterVal = document.getElementById("time-filter-input")?.value;
+
       currentFilteredResults = masterResults.filter(spot => {
+        // Type / Tab filter
+        let passesType = true;
         if (currentFilter === "favorites") {
-          return userFavorites.includes(spot.id);
+          passesType = userFavorites.includes(spot.id);
+        } else if (currentFilter === "myspots") {
+          passesType = (spot.isCustom || spot.id.startsWith("user-"));
+        } else if (currentFilter !== "all") {
+          passesType = (spot.type === currentFilter);
         }
-        if (currentFilter === "myspots") {
-          return spot.isCustom || spot.id.startsWith("user-");
+
+        // Time filter check
+        let passesTime = true;
+        if (timeFilterVal) {
+          passesTime = isSpotOpenAtTime(spot.hours, timeFilterVal);
         }
-        return currentFilter === "all" || spot.type === currentFilter;
+
+        return passesType && passesTime;
       });
 
       const totalPages = Math.ceil(currentFilteredResults.length / itemsPerPage) || 1;
@@ -1382,6 +1495,10 @@
       if (currentFilter === 'favorites') subtextLabel = "Saved in your favorites";
       else if (currentFilter === 'myspots') subtextLabel = "Custom spots created by you";
       else if (currentVerificationMode === 'verified') subtextLabel = "Verified only";
+
+      if (timeFilterVal) {
+        subtextLabel += " • Open at " + timeFilterVal;
+      }
 
       resultsSubtext.textContent = "Found " + currentFilteredResults.length + " locations (" + subtextLabel + ") • Page " + currentPage + " of " + totalPages;
       renderPage();
@@ -1412,8 +1529,8 @@
           emptyTitle.textContent = "No Custom Spots Added Yet";
           emptySubtext.textContent = "Click '+ Add Spot' at the top to store and manage your personal favorite study spots.";
         } else {
-          emptyTitle.textContent = "No Study Spots Found";
-          emptySubtext.textContent = "Try searching for a neighboring city or ZIP code, or click '+ Add Spot' to add it yourself.";
+          emptyTitle.textContent = "No Open Nests Found";
+          emptySubtext.textContent = "No spots match your active filters or operating hours. Try resetting the time filter or search query.";
         }
       } else {
         spotsGrid.classList.remove("hidden");
@@ -1695,6 +1812,9 @@
     });
 
     window.addEventListener("DOMContentLoaded", () => {
+      initLiveClock();
+      setInterval(initLiveClock, 60000); // update clock every minute
+
       updateCountBadges();
       executeSearch("");
 
@@ -1707,8 +1827,8 @@
       if ((isIos || isMobile) && !isStandalone && !wasDismissed) {
         const popup = document.getElementById("ios-install-popup");
         if (popup) {
-          popup.classList.remove("hidden");
           popup.classList.add("flex");
+          popup.classList.remove("hidden");
           refreshIcons();
         }
       }
