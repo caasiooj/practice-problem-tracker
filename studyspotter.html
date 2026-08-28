@@ -35,35 +35,15 @@
         <span class="font-bold text-xl tracking-tight text-slate-900">StudySpotter<span class="text-indigo-600">.</span></span>
       </div>
       
-      <!-- Action Bar: Add Place, My Places, Favorites & QR Share -->
+      <!-- Action Bar: Add Spot & QR App Modal Trigger -->
       <div class="flex items-center gap-2">
         <button 
           onclick="openAddSpotModal()" 
-          class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-semibold transition cursor-pointer"
+          class="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-semibold transition cursor-pointer"
           title="Add a new custom study spot"
         >
           <i data-lucide="plus-circle" class="w-4 h-4"></i>
-          <span class="hidden sm:inline">Add Spot</span>
-        </button>
-
-        <button 
-          onclick="switchToMySpotsTab()" 
-          class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-semibold transition cursor-pointer"
-          title="View Spots You Added"
-        >
-          <i data-lucide="user-check" class="w-4 h-4 text-amber-600"></i>
-          <span class="hidden sm:inline">My Added Spots</span>
-          <span id="header-my-count" class="px-1.5 py-0.2 bg-amber-200 text-amber-900 rounded-full text-[10px] font-bold">0</span>
-        </button>
-
-        <button 
-          onclick="switchToFavoritesTab()" 
-          class="flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-semibold transition cursor-pointer"
-          title="View Saved Favorites"
-        >
-          <i data-lucide="heart" class="w-4 h-4 fill-rose-500 text-rose-500"></i>
-          <span class="hidden sm:inline">Favorites</span>
-          <span id="header-fav-count" class="px-1.5 py-0.2 bg-rose-200 text-rose-800 rounded-full text-[10px] font-bold">0</span>
+          <span>Add Spot</span>
         </button>
 
         <button 
@@ -71,7 +51,7 @@
           class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-semibold transition cursor-pointer"
         >
           <i data-lucide="qr-code" class="w-4 h-4"></i>
-          <span class="hidden md:inline">App</span>
+          <span class="hidden sm:inline">App</span>
         </button>
       </div>
     </div>
@@ -128,16 +108,31 @@
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
     
-    <!-- Filter Bar -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-      <div>
-        <h2 id="results-heading" class="text-lg font-bold text-slate-900">All Study Spots</h2>
-        <p id="results-subtext" class="text-xs text-slate-500">Showing verified & community locations</p>
-      </div>
+    <!-- Filter Bar Header Section -->
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-slate-200">
+      
+      <!-- Left Side: My Added & Favorites (Top) -> Heading & Found Count (Middle) -> Verified & All Spaces (Bottom) -->
+      <div class="flex flex-col gap-3">
+        <!-- Top: My Added & Favorites Buttons -->
+        <div class="flex flex-wrap items-center gap-2">
+          <button data-type="myspots" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-white border border-amber-200 text-amber-700 hover:bg-amber-50 transition flex items-center gap-1 cursor-pointer shadow-sm">
+            <i data-lucide="user" class="w-3.5 h-3.5 text-amber-600"></i>
+            <span>My Added (<span id="filter-my-count">0</span>)</span>
+          </button>
+          <button data-type="favorites" class="filter-btn px-3 py-1.5 rounded-xl text-xs font-semibold bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 transition flex items-center gap-1 cursor-pointer shadow-sm">
+            <i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500 text-rose-500"></i>
+            <span>Favorites (<span id="filter-fav-count">0</span>)</span>
+          </button>
+        </div>
 
-      <div class="flex flex-wrap items-center gap-3">
-        <!-- Verification Toggle -->
-        <div class="flex items-center bg-slate-200/80 p-1 rounded-xl gap-1">
+        <!-- Middle: Title & Found Locations Subtext -->
+        <div>
+          <h2 id="results-heading" class="text-2xl font-bold text-slate-900 leading-tight">All Study Spots</h2>
+          <p id="results-subtext" class="text-xs text-slate-500 mt-0.5">Found 34 locations (All spaces) • Page 1 of 6</p>
+        </div>
+
+        <!-- Bottom: Verified & All Spaces Toggle Under Found Locations -->
+        <div class="flex items-center bg-slate-200/80 p-1 rounded-xl gap-1 w-fit mt-1">
           <button id="toggle-verified" onclick="setVerificationFilter('verified')" class="px-3 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
             <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
             <span>Verified Only</span>
@@ -147,32 +142,39 @@
             <span>All Spaces</span>
           </button>
         </div>
+      </div>
 
-        <!-- Place Type, My Added & Favorites Filters -->
-        <div class="flex flex-wrap gap-1.5" id="filter-buttons">
-          <button data-type="all" class="filter-btn active px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm transition">All</button>
-          <button data-type="coffee" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">☕ Coffee</button>
-          <button data-type="library" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">📚 Libraries</button>
-          <button data-type="campus" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">🎓 Campus</button>
-          <button data-type="myspots" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-amber-200 text-amber-700 hover:bg-amber-50 transition flex items-center gap-1">
-            <i data-lucide="user" class="w-3.5 h-3.5"></i>
-            <span>My Added (<span id="filter-my-count">0</span>)</span>
+      <!-- Right Side: Type Filter Chips & Items Per Page Dropdown -->
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-center gap-1.5" id="filter-buttons">
+          <button data-type="all" class="filter-btn active px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+            <span>All Types</span>
           </button>
-          <button data-type="favorites" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 transition flex items-center gap-1">
-            <i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500"></i>
-            <span>Favorites (<span id="filter-fav-count">0</span>)</span>
+          <button data-type="coffee" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+            <span>☕</span>
+            <span>Coffee</span>
+          </button>
+          <button data-type="library" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+            <span>📚</span>
+            <span>Libraries</span>
+          </button>
+          <button data-type="campus" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+            <span>🎓</span>
+            <span>Campus</span>
           </button>
         </div>
 
-        <div class="flex items-center gap-1 text-xs text-slate-500 pl-2 border-l border-slate-200">
-          <span>Show:</span>
-          <select id="items-per-page" class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <!-- Per Page Dropdown -->
+        <div class="flex items-center bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 shadow-sm">
+          <select id="items-per-page" class="bg-transparent text-xs font-medium text-slate-700 focus:outline-none cursor-pointer">
             <option value="6" selected>6 / page</option>
             <option value="12">12 / page</option>
             <option value="24">24 / page</option>
           </select>
         </div>
       </div>
+
     </div>
 
     <!-- Cards Grid -->
@@ -229,7 +231,7 @@
         </div>
         <div>
           <h3 class="text-lg font-bold text-slate-900">Add a Custom Study Spot</h3>
-          <p class="text-xs text-slate-500">Saved in your private "My Added Spots" directory. You can remove it anytime.</p>
+          <p class="text-xs text-slate-500">Saved in your private "My Added" directory. You can delete it anytime.</p>
         </div>
       </div>
 
@@ -310,7 +312,7 @@
   <!-- Study Spot Detail Modal -->
   <div id="detail-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 p-6 relative">
-      <button id="modal-close" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 cursor-pointer">
+      <button id="modal-close" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 cursor-pointer z-10">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
       <div id="modal-content"></div>
@@ -344,6 +346,48 @@
 
       <button onclick="closeQrModal()" class="w-full py-2.5 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition cursor-pointer">
         Done
+      </button>
+    </div>
+  </div>
+
+  <!-- iOS / Mobile App Installation Pop-Up Notification Modal -->
+  <div id="ios-install-popup" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full shadow-2xl border border-slate-100 p-6 relative text-center">
+      <button onclick="dismissInstallPopup()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
+        <i data-lucide="smartphone" class="w-6 h-6"></i>
+      </div>
+
+      <h3 class="text-lg font-bold text-slate-900 mb-1">Add StudySpotter to iPhone</h3>
+      <p class="text-xs text-slate-500 mb-5">Install this app on your home screen for quick access and full-screen study sessions.</p>
+
+      <div class="bg-slate-50 rounded-2xl p-4 text-left border border-slate-200/80 mb-6 text-xs text-slate-700 space-y-2.5">
+        <div class="flex items-start gap-2.5">
+          <div class="p-1.5 bg-indigo-600 text-white rounded-lg shrink-0 mt-0.5">
+            <i data-lucide="share" class="w-3.5 h-3.5"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-900">1. Tap the Share button</p>
+            <p class="text-slate-500 text-[11px]">Located at the bottom toolbar in Safari (↑).</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2.5">
+          <div class="p-1.5 bg-indigo-600 text-white rounded-lg shrink-0 mt-0.5">
+            <i data-lucide="plus-square" class="w-3.5 h-3.5"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-900">2. Select "Add to Home Screen"</p>
+            <p class="text-slate-500 text-[11px]">Scroll down the share sheet menu to find it.</p>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="dismissInstallPopup()" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl transition shadow-md cursor-pointer">
+        Got it, Thanks!
       </button>
     </div>
   </div>
@@ -1121,10 +1165,11 @@
       const favCount = userFavorites.length;
       const myCount = userCustomPlaces.length;
 
-      document.getElementById("header-fav-count").textContent = favCount;
-      document.getElementById("filter-fav-count").textContent = favCount;
-      document.getElementById("header-my-count").textContent = myCount;
-      document.getElementById("filter-my-count").textContent = myCount;
+      const filterFav = document.getElementById("filter-fav-count");
+      if (filterFav) filterFav.textContent = favCount;
+
+      const filterMy = document.getElementById("filter-my-count");
+      if (filterMy) filterMy.textContent = myCount;
     }
 
     window.toggleFavorite = function(id, event) {
@@ -1158,40 +1203,6 @@
 
         executeSearch(searchInput.value);
       }
-    };
-
-    window.switchToFavoritesTab = function() {
-      filterButtons.forEach(b => {
-        b.classList.remove("bg-indigo-600", "bg-rose-600", "bg-amber-600", "text-white");
-        if (b.dataset.type === "favorites") {
-          b.classList.add("bg-rose-600", "text-white");
-          b.classList.remove("bg-white", "text-rose-600");
-        } else if (b.dataset.type === "myspots") {
-          b.classList.add("bg-white", "text-amber-700", "border", "border-amber-200");
-        } else {
-          b.classList.add("bg-white", "text-slate-600", "border", "border-slate-200");
-        }
-      });
-      currentFilter = "favorites";
-      currentPage = 1;
-      executeSearch("");
-    };
-
-    window.switchToMySpotsTab = function() {
-      filterButtons.forEach(b => {
-        b.classList.remove("bg-indigo-600", "bg-rose-600", "bg-amber-600", "text-white");
-        if (b.dataset.type === "myspots") {
-          b.classList.add("bg-amber-600", "text-white");
-          b.classList.remove("bg-white", "text-amber-700");
-        } else if (b.dataset.type === "favorites") {
-          b.classList.add("bg-white", "text-rose-600", "border", "border-rose-200");
-        } else {
-          b.classList.add("bg-white", "text-slate-600", "border", "border-slate-200");
-        }
-      });
-      currentFilter = "myspots";
-      currentPage = 1;
-      executeSearch("");
     };
 
     function updateToggleButtons() {
@@ -1253,9 +1264,23 @@
       saveCustomPlaces(userCustomPlaces);
       closeAddSpotModal();
       
-      // Navigate to My Added Spots tab to view the new spot immediately
-      switchToMySpotsTab();
-      alert("✨ \"" + newSpot.name + "\" has been saved! You can find and manage it in 'My Added Spots'.");
+      // Select My Added tab to view immediately
+      filterButtons.forEach(b => {
+        b.classList.remove("bg-indigo-600", "bg-rose-600", "bg-amber-600", "text-white");
+        if (b.dataset.type === "myspots") {
+          b.classList.add("bg-amber-600", "text-white");
+          b.classList.remove("bg-white", "text-amber-700");
+        } else if (b.dataset.type === "favorites") {
+          b.classList.add("bg-white", "text-rose-600", "border", "border-rose-200");
+        } else {
+          b.classList.add("bg-white", "text-slate-700", "border", "border-slate-200");
+        }
+      });
+      currentFilter = "myspots";
+      currentPage = 1;
+      executeSearch("");
+
+      alert("✨ \"" + newSpot.name + "\" has been saved! You can find and manage it under 'My Added'.");
     });
 
     window.openQrModal = function() {
@@ -1278,6 +1303,16 @@
     window.closeQrModal = function() {
       qrModal.classList.add("hidden");
       qrModal.classList.remove("flex");
+    };
+
+    window.dismissInstallPrompt = function() {
+      const prompt = document.getElementById("ios-install-prompt");
+      if (prompt) {
+        prompt.classList.add("hidden");
+        try {
+          sessionStorage.setItem("studyspotter_prompt_dismissed", "true");
+        } catch (e) {}
+      }
     };
 
     function executeSearch(query) {
@@ -1552,7 +1587,7 @@
       const mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(spot.name + " " + spot.address + " " + spot.city + " CA");
 
       modalContent.innerHTML = `
-        <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center justify-between mb-2 pr-12">
           <div class="flex items-center gap-2">
             <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded ${typeBadgeColor}">
               ${spot.type.toUpperCase()}
@@ -1599,8 +1634,8 @@
         </a>
       `;
 
-      modal.classList.remove("hidden");
       modal.classList.add("flex");
+      modal.classList.remove("hidden");
       refreshIcons();
     };
 
@@ -1629,7 +1664,7 @@
           } else if (b.dataset.type === "myspots") {
             b.classList.add("bg-white", "text-amber-700", "border", "border-amber-200");
           } else {
-            b.classList.add("bg-white", "text-slate-600", "border", "border-slate-200");
+            b.classList.add("bg-white", "text-slate-700", "border", "border-slate-200");
           }
         });
 
@@ -1641,7 +1676,7 @@
           btn.classList.remove("bg-white", "text-amber-700");
         } else {
           btn.classList.add("bg-indigo-600", "text-white");
-          btn.classList.remove("bg-white", "text-slate-600");
+          btn.classList.remove("bg-white", "text-slate-700");
         }
 
         currentFilter = btn.dataset.type;
@@ -1662,7 +1697,33 @@
     window.addEventListener("DOMContentLoaded", () => {
       updateCountBadges();
       executeSearch("");
+
+      // Trigger the pop-up notification modal for iPhone/mobile users on load
+      const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+      const isMobile = /iphone|ipad|ipod|android|mobile/.test(window.navigator.userAgent.toLowerCase());
+      const isStandalone = ('standalone' in window.navigator && window.navigator.standalone) || window.matchMedia('(display-mode: standalone)').matches;
+      const wasDismissed = sessionStorage.getItem("studyspotter_popup_dismissed");
+
+      if ((isIos || isMobile) && !isStandalone && !wasDismissed) {
+        const popup = document.getElementById("ios-install-popup");
+        if (popup) {
+          popup.classList.remove("hidden");
+          popup.classList.add("flex");
+          refreshIcons();
+        }
+      }
     });
+
+    window.dismissInstallPopup = function() {
+      const popup = document.getElementById("ios-install-prompt") || document.getElementById("ios-install-popup");
+      if (popup) {
+        popup.classList.add("hidden");
+        popup.classList.remove("flex");
+        try {
+          sessionStorage.setItem("studyspotter_popup_dismissed", "true");
+        } catch (e) {}
+      }
+    };
   </script>
 </body>
 </html>
