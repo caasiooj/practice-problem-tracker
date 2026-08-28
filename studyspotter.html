@@ -2,12 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>StudySpotter | Verified Real Study Spaces</title>
-  <!-- Tailwind CSS CDN -->
+
+  <!-- iOS / Apple Web App Metadata -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="StudySpotter">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/caasiooj/practice-problem-tracker/main/icon.png">
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/caasiooj/practice-problem-tracker/main/icon.png">
+
+  <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Client-side QR Code Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -24,38 +34,41 @@
         </div>
         <span class="font-bold text-xl tracking-tight text-slate-900">StudySpotter<span class="text-indigo-600">.</span></span>
       </div>
-      <div class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        Verified Places Active
-      </div>
+      
+      <!-- QR Code & App Modal Trigger -->
+      <button 
+        onclick="openQrModal()" 
+        class="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-semibold transition cursor-pointer"
+      >
+        <i data-lucide="qr-code" class="w-4 h-4"></i>
+        <span>Scan / Install App</span>
+      </button>
     </div>
   </header>
 
-  <!-- Hero & Search Section -->
+  <!-- Hero Section -->
   <section class="bg-gradient-to-b from-indigo-950 via-indigo-900 to-indigo-800 text-white py-12 px-4 sm:px-6 lg:px-8 shadow-md">
     <div class="max-w-3xl mx-auto text-center">
       <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
         Find Real Study Spaces Near You
       </h1>
       <p class="text-indigo-200 text-sm sm:text-base mb-6 max-w-lg mx-auto">
-        Search by <strong>ZIP code</strong>, <strong>city</strong>, or <strong>place name</strong> to explore verified quiet study locations with direct Google Maps routing.
+        Search by <strong>ZIP code</strong>, <strong>city</strong>, or <strong>place name</strong> to explore quiet study locations with direct Google Maps routing.
       </p>
 
-      <!-- Unified Search Form -->
+      <!-- Search Input -->
       <form id="search-form" class="flex flex-col sm:flex-row gap-2.5 justify-center items-center max-w-lg mx-auto">
         <div class="relative w-full">
           <i data-lucide="search" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
           <input 
             type="text" 
             id="search-input" 
-            value=""
             placeholder="Search ZIP, City, or Name (e.g. 92354, Redlands, Augie's)..." 
             class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white text-slate-900 placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-400/40 shadow-lg"
           />
         </div>
         <button 
           type="submit" 
-          id="search-btn"
           class="w-full sm:w-auto px-7 py-3.5 bg-indigo-500 hover:bg-indigo-400 text-white font-semibold rounded-xl transition shadow-lg flex items-center justify-center gap-2 cursor-pointer shrink-0"
         >
           <span>Search</span>
@@ -63,7 +76,7 @@
         </button>
       </form>
 
-      <!-- Quick Search Suggestions -->
+      <!-- Quick Chips -->
       <div class="flex flex-wrap items-center justify-center gap-2 mt-4 text-xs text-indigo-200">
         <span>Quick searches:</span>
         <button type="button" onclick="quickSearch('92354')" class="underline hover:text-white transition">92354 (Loma Linda)</button>
@@ -71,8 +84,6 @@
         <button type="button" onclick="quickSearch('92373')" class="underline hover:text-white transition">92373 (Redlands)</button>
         <span>•</span>
         <button type="button" onclick="quickSearch('92501')" class="underline hover:text-white transition">92501 (Riverside)</button>
-        <span>•</span>
-        <button type="button" onclick="quickSearch('92408')" class="underline hover:text-white transition">92408 (San Bernardino)</button>
         <span>•</span>
         <button type="button" onclick="quickSearch('Augie\'s')" class="underline hover:text-white transition">Augie's</button>
       </div>
@@ -82,20 +93,19 @@
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
     
-    <!-- Controls / Filters Bar -->
+    <!-- Filter Bar -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
       <div>
         <h2 id="results-heading" class="text-lg font-bold text-slate-900">All Verified Study Spots</h2>
-        <p id="results-subtext" class="text-xs text-slate-500">Showing verified study locations</p>
+        <p id="results-subtext" class="text-xs text-slate-500">Showing verified locations</p>
       </div>
 
-      <!-- Type Filters & Page Size Selector -->
       <div class="flex flex-wrap items-center gap-3">
         <div class="flex flex-wrap gap-1.5" id="filter-buttons">
-          <button data-type="all" class="filter-btn active px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm transition">All Results</button>
-          <button data-type="coffee" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">☕ Coffee Shops</button>
+          <button data-type="all" class="filter-btn active px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm transition">All</button>
+          <button data-type="coffee" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">☕ Coffee</button>
           <button data-type="library" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">📚 Libraries</button>
-          <button data-type="campus" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">🎓 Campus / Lounges</button>
+          <button data-type="campus" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition">🎓 Campus</button>
         </div>
 
         <div class="flex items-center gap-1 text-xs text-slate-500 pl-2 border-l border-slate-200">
@@ -110,11 +120,9 @@
     </div>
 
     <!-- Cards Grid -->
-    <div id="spots-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-6">
-      <!-- Cards rendered dynamically -->
-    </div>
+    <div id="spots-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-6"></div>
 
-    <!-- Pagination Controls -->
+    <!-- Pagination -->
     <div id="pagination-container" class="hidden flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-slate-200 mt-8">
       <div id="pagination-info" class="text-xs text-slate-500"></div>
       <div class="flex flex-wrap items-center gap-1.5" id="pagination-buttons"></div>
@@ -126,12 +134,12 @@
         <i data-lucide="map-pin-off" class="w-6 h-6"></i>
       </div>
       <h3 class="text-base font-bold text-slate-800 mb-1">No Study Spots Found</h3>
-      <p id="empty-msg" class="text-xs text-slate-500 max-w-sm mx-auto mb-4">Try searching by a nearby ZIP code (e.g., 92354, 92373, 92501), city, or cafe name.</p>
+      <p class="text-xs text-slate-500 max-w-sm mx-auto mb-4">Try searching by a neighboring ZIP code or cafe name.</p>
     </div>
 
   </main>
 
-  <!-- Detail Modal -->
+  <!-- Study Spot Detail Modal -->
   <div id="detail-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 p-6 relative">
       <button id="modal-close" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100">
@@ -141,12 +149,61 @@
     </div>
   </div>
 
+  <!-- QR Code / Install App Modal -->
+  <div id="qr-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 p-6 relative text-center">
+      <button onclick="closeQrModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+        <i data-lucide="smartphone" class="w-6 h-6"></i>
+      </div>
+
+      <h3 class="text-xl font-bold text-slate-900 mb-1">Scan to Open & Install</h3>
+      <p class="text-xs text-slate-500 mb-6">Scan with your iPhone Camera to open the live app directly.</p>
+
+      <!-- Live Generated QR Code Container -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 inline-block shadow-inner mb-5">
+        <div id="qrcode-container" class="flex justify-center"></div>
+      </div>
+
+      <!-- Quick Install Instructions -->
+      <div class="bg-slate-50 rounded-xl p-3 text-left border border-slate-200/80 mb-4 text-xs text-slate-600 space-y-1.5">
+        <p class="font-bold text-slate-800 text-[11px] uppercase tracking-wide">How to install as an iPhone app:</p>
+        <p>1. Open the camera app and scan the QR code.</p>
+        <p>2. Tap the Safari banner to open the page.</p>
+        <p>3. Tap the <strong class="text-slate-900">Share icon (↑)</strong> and select <strong class="text-indigo-600">"Add to Home Screen" (+)</strong>.</p>
+      </div>
+
+      <button onclick="closeQrModal()" class="w-full py-2.5 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition cursor-pointer">
+        Done
+      </button>
+    </div>
+  </div>
+
+  <!-- iOS Floating Installation Banner -->
+  <div id="ios-install-prompt" class="hidden fixed bottom-4 left-4 right-4 z-40 bg-slate-900/95 backdrop-blur-md text-white p-4 rounded-2xl shadow-2xl border border-indigo-500/30 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="p-2.5 bg-indigo-600 rounded-xl">
+        <i data-lucide="share" class="w-5 h-5 text-white"></i>
+      </div>
+      <div>
+        <p class="text-xs font-bold text-slate-100">Install as iPhone App</p>
+        <p class="text-[11px] text-slate-300">Tap <span class="font-semibold text-white">Share (↑)</span>, then tap <span class="font-semibold text-indigo-300">"Add to Home Screen"</span></p>
+      </div>
+    </div>
+    <button onclick="document.getElementById('ios-install-prompt').remove()" class="text-slate-400 hover:text-white p-1">
+      <i data-lucide="x" class="w-4 h-4"></i>
+    </button>
+  </div>
+
   <!-- Footer -->
   <footer class="bg-white border-t border-slate-200 py-5 text-center text-xs text-slate-500">
-    <p>© 2026 StudySpotter • Real-time Study Space Finder for Medical & University Students</p>
+    <p>© 2026 StudySpotter • Real-time Study Space Finder for Medical Students</p>
   </footer>
 
-  <!-- Verified Places Database & Script -->
+  <!-- App Data & Scripts -->
   <script>
     const verifiedLocations = [
       // Loma Linda (92354)
@@ -165,7 +222,7 @@
         hours: "Mon-Thu 7:30AM - 11:00PM, Fri 7:30AM - 3:00PM, Sun 10:00AM - 10:00PM",
         rating: "4.9",
         reviewsCount: 138,
-        summary: "Primary academic library on campus. Dedicated quiet floors, private study rooms with dry-erase whiteboards, and extensive desk outlets for multi-device workflows.",
+        summary: "Primary academic library on campus. Dedicated quiet floors, private study rooms with dry-erase whiteboards, and extensive desk outlets.",
         tags: ["Quiet Floor", "Whiteboards", "Outlets Everywhere", "Campus Badge"]
       },
       {
@@ -183,7 +240,7 @@
         hours: "24/7 with Student ID Badge Access",
         rating: "4.8",
         reviewsCount: 84,
-        summary: "Dedicated 24/7 quiet study environment with low foot traffic, reliable climate control, and microwave/break areas located nearby.",
+        summary: "Dedicated 24/7 quiet study environment with low foot traffic, reliable climate control, and microwave/break areas nearby.",
         tags: ["24/7 Access", "Silent Area", "Power Strips", "Badge Required"]
       },
       {
@@ -201,7 +258,7 @@
         hours: "Mon-Sat 7:00AM - 6:00PM",
         rating: "4.5",
         reviewsCount: 62,
-        summary: "Cozy local cafe known for healthy meal options, pleasant ambient volume, and comfortable booths for long laptop study sessions.",
+        summary: "Cozy local cafe with healthy meal options, pleasant ambient sound levels, and comfortable booths for long laptop study sessions.",
         tags: ["Booth Seating", "Comfort Food", "Lo-Fi Music", "Patio"]
       },
       {
@@ -219,26 +276,8 @@
         hours: "Mon-Wed 10:00AM - 8:00PM, Thu 10:00AM - 6:00PM, Sat 9:00AM - 5:00PM",
         rating: "4.6",
         reviewsCount: 47,
-        summary: "Clean, natural light-filled public branch. Great quiet atmosphere for uninterrupted reading and test prep blocks.",
+        summary: "Clean public library with bright natural lighting and designated quiet study desks.",
         tags: ["Public Library", "Natural Light", "Free Parking"]
-      },
-      {
-        id: "ll-5",
-        name: "Daily Brew Coffee",
-        type: "coffee",
-        address: "25255 Barton Rd",
-        city: "Loma Linda",
-        state: "CA",
-        zip: "92354",
-        noiseLevel: "Moderate (55-60 dB)",
-        outlets: "Available along side counters",
-        wifi: "Standard Guest Wi-Fi",
-        seating: "Indoor café tables & outdoor patio",
-        hours: "Mon-Fri 6:00AM - 5:00PM, Sat-Sun 7:00AM - 3:00PM",
-        rating: "4.4",
-        reviewsCount: 53,
-        summary: "Convenient spot along Barton Road with quick beverage service and good outdoor shaded seating for casual flashcard reviews.",
-        tags: ["Outdoor Seating", "Quick Service", "Casual Study"]
       },
 
       // Redlands (92373 & 92374)
@@ -253,11 +292,11 @@
         noiseLevel: "Moderate / Coffeehouse Hum (58-65 dB)",
         outlets: "Moderate (Along perimeter walls)",
         wifi: "High-Speed Wi-Fi (65 Mbps)",
-        seating: "Communal wooden tables, bar stools & sidewalk seating",
+        seating: "Communal wooden tables, bar stools & patio",
         hours: "Daily 7:00AM - 6:00PM",
         rating: "4.7",
         reviewsCount: 195,
-        summary: "Historic Downtown Redlands favorite. High-energy atmosphere with excellent artisan espresso, perfect for group discussions and daytime Anki sprints.",
+        summary: "Historic Downtown Redlands favorite with artisan espresso, perfect for group review and daytime flashcard runs.",
         tags: ["Specialty Roast", "Historic Downtown", "Great Vibe", "Outdoor Patio"]
       },
       {
@@ -275,7 +314,7 @@
         hours: "Tue-Wed 10:00AM - 8:00PM, Thu-Sat 10:00AM - 5:00PM",
         rating: "4.9",
         reviewsCount: 220,
-        summary: "Stunning Moorish-style historic landmark with vaulted wood ceilings, stained glass, and exceptional pin-drop quiet acoustics for deep immersion.",
+        summary: "Historic architectural landmark with stained glass, vaulted ceilings, and pin-drop quiet acoustics for deep immersion.",
         tags: ["Historic Landmark", "High Ceilings", "Strict Quiet", "Beautiful Ambiance"]
       },
       {
@@ -293,7 +332,7 @@
         hours: "Daily 6:30AM - 5:30PM",
         rating: "4.6",
         reviewsCount: 110,
-        summary: "Spacious roastery with ample natural lighting, relaxed acoustics, and a generous patio suitable for productive afternoon work.",
+        summary: "Spacious roastery with ample natural lighting, relaxed acoustics, and a generous patio.",
         tags: ["Spacious", "Natural Light", "Roastery", "Ample Parking"]
       },
       {
@@ -311,103 +350,11 @@
         hours: "Mon-Thu 8:00AM - 10:00PM, Fri 8:00AM - 5:00PM, Sun 1:00PM - 10:00PM",
         rating: "4.8",
         reviewsCount: 74,
-        summary: "Multi-level university library with expansive quiet zones, panoramic campus views, and large desks suitable for heavy reference study.",
-        tags: ["University Library", "Quiet Floors", "Spacious", "Scenic Views"]
-      },
-      {
-        id: "red-5",
-        name: "Slow Bloom Coffee Cooperative",
-        type: "coffee",
-        address: "516 W Stuart Ave",
-        city: "Redlands",
-        state: "CA",
-        zip: "92374",
-        noiseLevel: "Low to Moderate (50-54 dB)",
-        outlets: "Available along side seating",
-        wifi: "Reliable Wi-Fi (45 Mbps)",
-        seating: "Modern minimalist wooden seating & tables",
-        hours: "Daily 7:00AM - 4:00PM",
-        rating: "4.8",
-        reviewsCount: 88,
-        summary: "Worker-owned specialty cafe offering meticulously prepared coffees and a peaceful, minimalist interior designed for uninterrupted focus.",
-        tags: ["Specialty Coffee", "Minimalist", "Quiet Atmosphere"]
-      },
-      {
-        id: "red-6",
-        name: "Condron Coffee",
-        type: "coffee",
-        address: "1125 W Colton Ave",
-        city: "Redlands",
-        state: "CA",
-        zip: "92374",
-        noiseLevel: "Moderate (55 dB)",
-        outlets: "Plentiful along back counter & booths",
-        wifi: "Fast Wi-Fi (70 Mbps)",
-        seating: "Comfortable booths, bar seating & round tables",
-        hours: "Mon-Sat 7:00AM - 6:00PM",
-        rating: "4.7",
-        reviewsCount: 65,
-        summary: "Warm community coffeehouse with great matcha, specialty seasonal beverages, and dependable outlets.",
-        tags: ["Great Matcha", "Booths", "Power Outlets"]
+        summary: "Multi-level university library with quiet zones and mountain views.",
+        tags: ["University Library", "Quiet Floors", "Spacious"]
       },
 
-      // San Bernardino (92408, 92405, 92410)
-      {
-        id: "sb-1",
-        name: "Starbucks on Barton",
-        type: "coffee",
-        address: "1150 E Barton Rd",
-        city: "San Bernardino",
-        state: "CA",
-        zip: "92408",
-        noiseLevel: "Moderate (60 dB)",
-        outlets: "Plentiful along side wall counters",
-        wifi: "High-Speed Google Starbucks (100 Mbps)",
-        seating: "Communal work tables & padded armchairs",
-        hours: "Daily 5:00AM - 9:30PM",
-        rating: "4.3",
-        reviewsCount: 94,
-        summary: "Convenient early and late hours. Great for quick power sessions and easy access off the Barton commute corridor.",
-        tags: ["Extended Hours", "Fast Wi-Fi", "Early Morning"]
-      },
-      {
-        id: "sb-2",
-        name: "San Bernardino Public Library - Feldheym Central Library",
-        type: "library",
-        address: "555 W 6th St",
-        city: "San Bernardino",
-        state: "CA",
-        zip: "92410",
-        noiseLevel: "Quiet (40 dB)",
-        outlets: "Abundant across research cubicles",
-        wifi: "City High-Speed Wi-Fi",
-        seating: "Individual cubicles & expansive reference tables",
-        hours: "Mon-Thu 10:00AM - 6:00PM, Sat 1:00PM - 6:00PM",
-        rating: "4.5",
-        reviewsCount: 82,
-        summary: "Large central library branch with extensive reference sections and spacious desks for laptop and textbook setup.",
-        tags: ["Central Branch", "Spacious", "Quiet Desks"]
-      },
-      {
-        id: "sb-3",
-        name: "John M. Pfau Library (CSU San Bernardino)",
-        type: "campus",
-        address: "5500 University Pkwy",
-        city: "San Bernardino",
-        state: "CA",
-        zip: "92407",
-        noiseLevel: "Strict Silence on Floors 4-5 (< 38 dB)",
-        outlets: "Every study carrel equipped with plugs",
-        wifi: "Eduroam & CSUSB Guest",
-        seating: "Multi-floor study carrels, computer pods & group rooms",
-        hours: "Mon-Thu 7:30AM - 10:00PM, Fri 7:30AM - 5:00PM",
-        rating: "4.8",
-        reviewsCount: 115,
-        summary: "Massive 5-story university library. Floors 4 and 5 offer strict silent study environments with mountain views.",
-        tags: ["5-Story Library", "Silent Floors", "Mountain Views", "Eduroam"]
-      },
-
-      // Riverside (92501, 92506, 92507, 92521)
+      // Riverside (92501 & 92507)
       {
         id: "riv-1",
         name: "Riverside Main Public Library",
@@ -419,11 +366,11 @@
         noiseLevel: "Whisper Quiet (38 dB)",
         outlets: "Abundant (Integrated in all study tables)",
         wifi: "High-Speed Municipal Fiber",
-        seating: "Modern ergonomic task chairs, study pods & terrace seating",
+        seating: "Modern ergonomic task chairs, study pods & terrace",
         hours: "Mon-Thu 10:00AM - 7:00PM, Fri-Sat 10:00AM - 5:00PM",
         rating: "4.9",
         reviewsCount: 185,
-        summary: "Brand-new, state-of-the-art multi-story library in Downtown Riverside with rooftop reading terrace, private study pods, and abundant power.",
+        summary: "Modern multi-story library in Downtown Riverside with rooftop reading terrace, private pods, and abundant power.",
         tags: ["Modern Architecture", "Rooftop Terrace", "Study Pods", "Fiber Wi-Fi"]
       },
       {
@@ -441,148 +388,17 @@
         hours: "Daily 7:00AM - 5:00PM",
         rating: "4.8",
         reviewsCount: 142,
-        summary: "Renowned specialty coffee roastery with bright natural lighting, aesthetic interior design, and a focused work vibe.",
-        tags: ["Specialty Beans", "Natural Light", "Design Forward", "Fast Wi-Fi"]
-      },
-      {
-        id: "riv-3",
-        name: "Molinos Coffee",
-        type: "coffee",
-        address: "3660 Mission Inn Ave",
-        city: "Riverside",
-        state: "CA",
-        zip: "92501",
-        noiseLevel: "Moderate (54 dB)",
-        outlets: "Available along side tables",
-        wifi: "Guest Wi-Fi",
-        seating: "Indoor cafe tables & outdoor pedestrian walkway",
-        hours: "Mon-Fri 6:30AM - 8:00PM, Sat-Sun 7:00AM - 8:00PM",
-        rating: "4.6",
-        reviewsCount: 98,
-        summary: "Located in the heart of Downtown Riverside next to the historic Mission Inn. Excellent Cuban espresso and evening hours.",
-        tags: ["Downtown", "Cuban Coffee", "Evening Hours"]
-      },
-      {
-        id: "riv-4",
-        name: "Tomas Rivera Library (UC Riverside)",
-        type: "campus",
-        address: "900 University Ave",
-        city: "Riverside",
-        state: "CA",
-        zip: "92521",
-        noiseLevel: "Whisper Quiet on Upper Floors (36 dB)",
-        outlets: "Extensive along carrel desks",
-        wifi: "Eduroam & UCR Guest",
-        seating: "Individual study desks, private carrels & lounge seating",
-        hours: "Mon-Thu 8:00AM - 11:00PM, Fri 8:00AM - 6:00PM, Sun 1:00PM - 10:00PM",
-        rating: "4.8",
-        reviewsCount: 130,
-        summary: "Premier research library on the UCR campus with dedicated silent study floors and extensive academic resources.",
-        tags: ["Campus Research", "Silent Floors", "Eduroam", "Carrels"]
-      },
-      {
-        id: "riv-5",
-        name: "Crave Coffee",
-        type: "coffee",
-        address: "3590 Central Ave",
-        city: "Riverside",
-        state: "CA",
-        zip: "92506",
-        noiseLevel: "Low to Moderate (50 dB)",
-        outlets: "Plentiful throughout main room",
-        wifi: "High-Speed Wi-Fi",
-        seating: "Padded armchairs, communal wood tables & booths",
-        hours: "Daily 6:30AM - 7:00PM",
-        rating: "4.6",
-        reviewsCount: 76,
-        summary: "Spacious neighborhood cafe with great tea and coffee selections, plenty of outlets, and comfortable seating.",
-        tags: ["Spacious", "Comfortable", "Tea & Coffee"]
-      },
-      {
-        id: "riv-6",
-        name: "Lift Coffee Roasters",
-        type: "coffee",
-        address: "2060 University Ave",
-        city: "Riverside",
-        state: "CA",
-        zip: "92507",
-        noiseLevel: "Moderate (56 dB)",
-        outlets: "Moderate near window benches",
-        wifi: "Fast Wi-Fi (60 Mbps)",
-        seating: "Modern industrial tables & bar stools",
-        hours: "Daily 7:00AM - 6:00PM",
-        rating: "4.7",
-        reviewsCount: 92,
-        summary: "Industrial-chic roastery located close to university housing, popular for study sprints and specialty pour-overs.",
-        tags: ["Pour Overs", "Industrial Vibe", "Near UCR"]
-      },
-
-      // Claremont / Pomona / Rancho Cucamonga (91711, 91730)
-      {
-        id: "cl-1",
-        name: "Honnold/Mudd Library (Claremont Colleges)",
-        type: "campus",
-        address: "800 N Dartmouth Ave",
-        city: "Claremont",
-        state: "CA",
-        zip: "91711",
-        noiseLevel: "Silent Floors (< 38 dB)",
-        outlets: "Power at every desk & workstation",
-        wifi: "High-Speed Campus & Eduroam",
-        seating: "Individual cubicles, wide collaborative tables & armchairs",
-        hours: "Mon-Thu 8:00AM - Midnight, Fri 8:00AM - 6:00PM",
-        rating: "4.9",
-        reviewsCount: 155,
-        summary: "Intercollegiate library serving the Claremont Colleges. Features extensive silent study lofts, massive desk spaces, and natural lighting.",
-        tags: ["Collegiate Library", "Silent Lofts", "Eduroam", "Extensive Outlets"]
-      },
-      {
-        id: "cl-2",
-        name: "Claremont Helen Renwick Public Library",
-        type: "library",
-        address: "208 N Harvard Ave",
-        city: "Claremont",
-        state: "CA",
-        zip: "91711",
-        noiseLevel: "Quiet (40 dB)",
-        outlets: "Moderate in reading areas",
-        wifi: "LA County Public Wi-Fi",
-        seating: "Solid wood study desks & easy chairs",
-        hours: "Tue-Wed 12:00PM - 8:00PM, Thu-Sat 10:00AM - 6:00PM",
-        rating: "4.7",
-        reviewsCount: 68,
-        summary: "Peaceful library in Claremont Village, steps away from local cafes and tree-lined walkways.",
-        tags: ["Claremont Village", "Quiet", "Tree-Lined"]
-      },
-      {
-        id: "rc-1",
-        name: "Victoria Gardens Cultural Center & Library",
-        type: "library",
-        address: "12505 Cultural Center Dr",
-        city: "Rancho Cucamonga",
-        state: "CA",
-        zip: "91730",
-        noiseLevel: "Quiet (42 dB)",
-        outlets: "Abundant near computer & study carrels",
-        wifi: "Free City Wi-Fi (50 Mbps)",
-        seating: "Spacious reading tables, study desks & armchairs",
-        hours: "Mon-Thu 10:00AM - 8:00PM, Fri-Sat 10:00AM - 6:00PM",
-        rating: "4.8",
-        reviewsCount: 140,
-        summary: "Modern, high-ceilinged library integrated into Victoria Gardens with dedicated quiet study sections and clean workstations.",
-        tags: ["Modern Library", "Victoria Gardens", "Quiet Carrels"]
+        summary: "Specialty coffee roastery with bright natural lighting and focused work vibe.",
+        tags: ["Specialty Beans", "Natural Light", "Design Forward"]
       }
     ];
 
-    // State
     let masterResults = [...verifiedLocations];
     let currentFilteredResults = [];
     let currentPage = 1;
     let itemsPerPage = 6;
     let currentFilter = "all";
 
-    // DOM Elements
-    const searchForm = document.getElementById("search-form");
     const searchInput = document.getElementById("search-input");
     const spotsGrid = document.getElementById("spots-grid");
     const emptyState = document.getElementById("empty-state");
@@ -596,10 +412,35 @@
     const modal = document.getElementById("detail-modal");
     const modalContent = document.getElementById("modal-content");
     const modalClose = document.getElementById("modal-close");
+    const qrModal = document.getElementById("qr-modal");
 
     function refreshIcons() {
       if (window.lucide) lucide.createIcons();
     }
+
+    window.openQrModal = function() {
+      const qrContainer = document.getElementById("qrcode-container");
+      qrContainer.innerHTML = "";
+      
+      const appUrl = window.location.href.split('#')[0];
+      new QRCode(qrContainer, {
+        text: appUrl,
+        width: 180,
+        height: 180,
+        colorDark: "#1e1b4b",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      qrModal.classList.remove("hidden");
+      qrModal.classList.add("flex");
+      refreshIcons();
+    };
+
+    window.closeQrModal = function() {
+      qrModal.classList.add("hidden");
+      qrModal.classList.remove("flex");
+    };
 
     function executeSearch(query) {
       const q = query.trim().toLowerCase();
@@ -683,7 +524,7 @@
           const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.name + ' ' + spot.address + ' ' + spot.city + ' CA')}`;
 
           const card = document.createElement("div");
-          card.className = "bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-xl hover:border-indigo-200 transition-all duration-200 flex flex-col justify-between";
+          card.className = "bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-xl hover:border-indigo-200 transition duration-200 flex flex-col justify-between";
 
           card.innerHTML = `
             <div>
@@ -856,18 +697,22 @@
       });
     });
 
-    searchForm.addEventListener("submit", (e) => {
+    document.getElementById("search-form").addEventListener("submit", (e) => {
       e.preventDefault();
       executeSearch(searchInput.value);
     });
 
-    // Real-time instant search as user types
     searchInput.addEventListener("input", (e) => {
       executeSearch(e.target.value);
     });
 
-    // Load initial catalog with a clean, blank input field
     window.addEventListener("DOMContentLoaded", () => {
+      const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+      const isStandalone = ('standalone' in window.navigator) && (window.navigator.standalone);
+      if (isIos && !isStandalone) {
+        document.getElementById('ios-install-prompt').classList.remove('hidden');
+      }
+      
       searchInput.value = "";
       executeSearch("");
     });
