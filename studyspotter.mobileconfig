@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>FullScreen</key>
+            <true/>
+            <key>IsRemovable</key>
+            <true/>
+            <key>Label</key>
+            <string>StudySpotter</string>
+            <key>PayloadDescription</key>
+            <string>Installs StudySpotter on your home screen.</string>
+            <key>PayloadDisplayName</key>
+            <string>StudySpotter</string>
+            <key>PayloadIdentifier</key>
+            <string>com.studyspotter.app.webclip</string>
+            <key>PayloadType</key>
+            <string>com.apple.webClip.managed</string>
+            <key>PayloadUUID</key>
+            <string>FCC00EEB-AB55-4D02-BE64-12FC8781E5AF</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>Precomposed</key>
+            <true/>
+            <key>URL</key>
+            <string>https://caasiooj.github.io/practice-problem-tracker/studyspotter.html</string>
+        </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>StudySpotter Web App Installer</string>
+    <key>PayloadDisplayName</key>
+    <string>StudySpotter</string>
+    <key>PayloadIdentifier</key>
+    <string>com.studyspotter.profile</string>
+    <key>PayloadOrganization</key>
+    <string>LLU Study Project</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>4D07F8C7-7CA2-4C32-8A12-86D1F33387C8</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>
