@@ -365,18 +365,16 @@
   <div class="container">
     <!-- Google Auth Bar -->
     <div class="auth-bar">
-      <div class="auth-user" id="authUserText">Not signed in</div>
-      <div id="authBtnContainer">
-        <button class="btn-google" onclick="loginWithGoogle()">Sign in with Google</button>
-      </div>
+      <div class="auth-user" id="authUserText">Checking authentication...</div>
+      <div id="authBtnContainer"></div>
     </div>
 
     <!-- Tab Header Navigation -->
     <div class="tab-header" id="tabHeader">
-      <button class="tab-btn active" onclick="switchTab('first_pass_uw')">First Pass UW</button>
-      <button class="tab-btn" onclick="switchTab('incorrect_uworld')">Incorrect Uworld</button>
-      <button class="tab-btn" onclick="switchTab('amboss')">Amboss</button>
-      <button class="tab-btn" onclick="switchTab('mehlman')">Mehlman</button>
+      <button class="tab-btn active" onclick="switchTab('first_pass_uw', event)">First Pass UW</button>
+      <button class="tab-btn" onclick="switchTab('incorrect_uworld', event)">Incorrect Uworld</button>
+      <button class="tab-btn" onclick="switchTab('amboss', event)">Amboss</button>
+      <button class="tab-btn" onclick="switchTab('mehlman', event)">Mehlman</button>
     </div>
 
     <!-- Tab Contents Container -->
@@ -384,7 +382,6 @@
   </div>
 
   <script>
-    // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyA3V_4Ia9wGwzbOFUjzJNWw1BdvZlg3Yko",
       authDomain: "sig-in-7e097.firebaseapp.com",
@@ -410,83 +407,12 @@
     let currentUser = null;
     let states = {};
 
-    // Initialize blank states locally
     tabsConfig.forEach(tab => {
       states[tab.id] = { totalQuestions: 0, startDate: "", endDate: "", recurringRestDays: [], days: [] };
     });
 
-    // Handle Google Login
-    function loginWithGoogle() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).catch((error) => {
-        alert("Authentication failed: " + error.message);
-      });
-    }
-
-    function logout() {
-      auth.signOut();
-    }
-
-    // Listen for Auth State Changes
-    auth.onAuthStateChanged((user) => {
-      currentUser = user;
-      const authUserText = document.getElementById("authUserText");
-      const authBtnContainer = document.getElementById("authBtnContainer");
-
-      if (user) {
-        authUserText.innerText = `Signed in as: ${user.email}`;
-        authBtnContainer.innerHTML = `<button class="btn-secondary" onclick="logout()">Sign Out</button>`;
-        loadUserDataFromCloud();
-      } else {
-        authUserText.innerText = "Not signed in (Data saving locally/session only)";
-        authBtnContainer.innerHTML = `<button class="btn-google" onclick="loginWithGoogle()">Sign in with Google</button>`;
-        loadLocalDataFallback();
-      }
-    });
-
-    function loadLocalDataFallback() {
-      tabsConfig.forEach(tab => {
-        const saved = localStorage.getItem("question_tracker_tab_v2_" + tab.id);
-        if (saved) states[tab.id] = JSON.parse(saved);
-      });
-      initAppUI();
-    }
-
-    // Sync Data to Cloud Firestore
-    async function saveState(tabId) {
-      if (currentUser) {
-        try {
-          await db.collection("users").doc(currentUser.uid).collection("trackers").doc(tabId).set(states[tabId]);
-        } catch (err) {
-          console.error("Error saving to cloud:", err);
-        }
-      } else {
-        localStorage.setItem("question_tracker_tab_v2_" + tabId, JSON.stringify(states[tabId]));
-      }
-    }
-
-    async function loadUserDataFromCloud() {
-      for (const tab of tabsConfig) {
-        try {
-          const docRef = await db.collection("users").doc(currentUser.uid).collection("trackers").doc(tab.id).get();
-          if (docRef.exists) {
-            states[tab.id] = docRef.data();
-          } else {
-            // Fallback check local storage if cloud is empty
-            const local = localStorage.getItem("question_tracker_tab_v2_" + tab.id);
-            if (local) {
-              states[tab.id] = JSON.parse(local);
-              await saveState(tab.id); // push local to cloud initially
-            }
-          }
-        } catch (err) {
-          console.error("Error loading cloud data for " + tab.id, err);
-        }
-      }
-      initAppUI();
-    }
-
-    function initAppUI() {
+    // Build UI skeleton once on startup
+    function buildAppUI() {
       const container = document.getElementById("tabContentsContainer");
       container.innerHTML = "";
 
@@ -582,28 +508,101 @@
           </div>
         `;
         container.appendChild(div);
+      });
+    }
 
-        // Populate fields from state
+    // Populate input fields and render views using loaded state data
+    function updateAllViews() {
+      tabsConfig.forEach(tab => {
         const tabState = states[tab.id];
-        document.getElementById(`totalQuestions-${tab.id}`).value = tabState.totalQuestions || "";
-        document.getElementById(`startDate-${tab.id}`).value = tabState.startDate || new Date().toISOString().split("T")[0];
-        document.getElementById(`endDate-${tab.id}`).value = tabState.endDate || "";
+        if (tabState) {
+          document.getElementById(`totalQuestions-${tab.id}`).value = tabState.totalQuestions || "";
+          document.getElementById(`startDate-${tab.id}`).value = tabState.startDate || new Date().toISOString().split("T")[0];
+          document.getElementById(`endDate-${tab.id}`).value = tabState.endDate || "";
 
-        (tabState.recurringRestDays || []).forEach(dayIndex => {
-          const el = document.getElementById(`rest-${tab.id}-${dayIndex}`);
-          if (el) el.checked = true;
-        });
+          for (let i = 0; i < 7; i++) {
+            const el = document.getElementById(`rest-${tab.id}-${i}`);
+            if (el) {
+              el.checked = (tabState.recurringRestDays || []).includes(i);
+            }
+          }
 
-        if (tabState.days && tabState.days.length > 0) {
-          renderTab(tab.id);
+          if (tabState.days && tabState.days.length > 0) {
+            renderTab(tab.id);
+          }
         }
       });
     }
 
-    function switchTab(tabId) {
+    function loginWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).catch((error) => {
+        alert("Authentication failed: " + error.message);
+      });
+    }
+
+    function logout() {
+      auth.signOut();
+    }
+
+    // Handle Authentication State Changes & Cloud Loading
+    auth.onAuthStateChanged(async (user) => {
+      currentUser = user;
+      const authUserText = document.getElementById("authUserText");
+      const authBtnContainer = document.getElementById("authBtnContainer");
+
+      if (user) {
+        authUserText.innerText = `Signed in as: ${user.email}`;
+        authBtnContainer.innerHTML = `<button class="btn-secondary" onclick="logout()">Sign Out</button>`;
+        
+        // Load from Cloud
+        for (const tab of tabsConfig) {
+          try {
+            const docRef = await db.collection("users").doc(user.uid).collection("trackers").doc(tab.id).get();
+            if (docRef.exists) {
+              states[tab.id] = docRef.data();
+            } else {
+              const local = localStorage.getItem("question_tracker_tab_v2_" + tab.id);
+              if (local) {
+                states[tab.id] = JSON.parse(local);
+                await saveState(tab.id);
+              }
+            }
+          } catch (err) {
+            console.error("Error loading cloud data", err);
+          }
+        }
+      } else {
+        authUserText.innerText = "Not signed in (Local session mode)";
+        authBtnContainer.innerHTML = `<button class="btn-google" onclick="loginWithGoogle()">Sign in with Google</button>`;
+        
+        tabsConfig.forEach(tab => {
+          const saved = localStorage.getItem("question_tracker_tab_v2_" + tab.id);
+          if (saved) states[tab.id] = JSON.parse(saved);
+        });
+      }
+
+      updateAllViews();
+    });
+
+    async function saveState(tabId) {
+      if (currentUser) {
+        try {
+          await db.collection("users").doc(currentUser.uid).collection("trackers").doc(tabId).set(states[tabId]);
+        } catch (err) {
+          console.error("Error saving to cloud:", err);
+        }
+      } else {
+        localStorage.setItem("question_tracker_tab_v2_" + tabId, JSON.stringify(states[tabId]));
+      }
+    }
+
+    function switchTab(tabId, event) {
       currentTabId = tabId;
       document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-      event.currentTarget.classList.add("active");
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add("active");
+      }
 
       document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
       document.getElementById(`content-${tabId}`).classList.add("active");
@@ -773,6 +772,11 @@
         tbody.appendChild(tr);
       });
     }
+
+    // Initialize UI skeleton on page load
+    window.onload = () => {
+      buildAppUI();
+    };
   </script>
 </body>
 </html>
