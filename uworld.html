@@ -14,6 +14,7 @@
       --border: #e2e8f0;
       --danger: #dc2626;
       --danger-bg: #fee2e2;
+      --success: #16a34a;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); padding: 24px; display: flex; justify-content: center; }
@@ -35,11 +36,10 @@
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-danger { background: var(--danger); color: #fff; }
     .btn-secondary { background: #f1f5f9; color: var(--text); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
     
-    /* 2x2 grid on desktop, 1-column on small screens to give full width to long labels */
     .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; align-items: start; }
     
-    /* Fixed table layout prevents overflow and forces word wrapping */
     table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
     th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); word-wrap: break-word; overflow-wrap: break-word; white-space: normal; }
     th { background: #f8fafc; color: var(--muted); font-weight: 600; }
@@ -49,7 +49,6 @@
 
     .badge-count { background: var(--danger-bg); color: var(--danger); font-weight: 700; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; }
     
-    /* Vertical scroll only; no horizontal overflow */
     .table-container-scroll { max-height: 280px; overflow-y: auto; overflow-x: hidden; width: 100%; }
     .table-container-full { width: 100%; overflow-x: auto; }
   </style>
@@ -59,8 +58,18 @@
 <div class="container">
   <!-- Input Card -->
   <div class="card">
-    <h1>Question Error Analyzer</h1>
-    <p class="subtitle">Organize and tally misses across ID, Subjects, Systems, Categories, and Topics.</p>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <h1>Question Error Analyzer</h1>
+        <p class="subtitle">Organize and tally misses across ID, Subjects, Systems, Categories, and Topics.</p>
+      </div>
+      <!-- Backup & Restore Buttons -->
+      <div class="btn-group">
+        <button class="btn-outline" onclick="exportData()">Export JSON Backup</button>
+        <button class="btn-outline" onclick="document.getElementById('importFile').click()">Import JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)" />
+      </div>
+    </div>
     
     <!-- Manual Single Row Entry -->
     <div class="manual-grid">
@@ -102,9 +111,8 @@
     </div>
   </div>
 
-  <!-- 4 Tally Cards Grid (Vertical Scroll Only, No Horizontal Cutoff) -->
+  <!-- 4 Tally Cards Grid -->
   <div class="grid-4">
-    <!-- Subjects Tally -->
     <div class="card">
       <h2>Top Subjects</h2>
       <div class="table-container-scroll">
@@ -115,7 +123,6 @@
       </div>
     </div>
 
-    <!-- Systems Tally -->
     <div class="card">
       <h2>Top Systems</h2>
       <div class="table-container-scroll">
@@ -126,7 +133,6 @@
       </div>
     </div>
 
-    <!-- Categories Tally -->
     <div class="card">
       <h2>Top Categories</h2>
       <div class="table-container-scroll">
@@ -137,7 +143,6 @@
       </div>
     </div>
 
-    <!-- Topics Tally -->
     <div class="card">
       <h2>Top Topics</h2>
       <div class="table-container-scroll">
@@ -172,12 +177,26 @@
 
 <script>
   const STORAGE_KEY = "5tier_question_tallies";
-  let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  let records = [];
+
+  // Safe load on boot
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    records = raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error("Local storage read blocked or failed:", e);
+    records = [];
+  }
 
   window.onload = renderTables;
 
   function saveData() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    } catch (err) {
+      console.error("Save error:", err);
+      alert("Storage warning: Could not save to browser cache. Use 'Export JSON' to keep your data safe.");
+    }
     renderTables();
   }
 
@@ -249,6 +268,41 @@
       records = [];
       saveData();
     }
+  }
+
+  // Backup / Export
+  function exportData() {
+    const blob = new Blob([JSON.stringify(records, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `question_errors_backup_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Restore / Import
+  function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const parsed = JSON.parse(e.target.result);
+        if (Array.isArray(parsed)) {
+          records = parsed;
+          saveData();
+          alert("Data imported successfully!");
+        } else {
+          alert("Invalid file format. Expected a JSON array.");
+        }
+      } catch (err) {
+        alert("Error reading file: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = ""; // reset file input
   }
 
   function populateTallyTable(targetId, counts) {
